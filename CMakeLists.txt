@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.22)
-project(dictionary)
+project(Dictionary)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(dictionary main.cpp CLI.cpp CLI.h)
+add_executable(Wordlebook main.cpp Shell.cpp Shell.h)

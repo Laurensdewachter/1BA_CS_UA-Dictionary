@@ -1,6 +1,9 @@
 #include <iostream>
+#include "Shell.h"
 
 int main() {
-    std::cout << "Hello, World!" << std::endl;
+    Shell cli;
+    cli.launch();
+
     return 0;
 }
