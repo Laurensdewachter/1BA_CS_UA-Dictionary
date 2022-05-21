@@ -8,8 +8,10 @@
 
 class Shell {
     bool running;
+    bool windows;
+    std::string prompt;
 public:
-    Shell() = default;
+    Shell(bool windows);
     ~Shell() = default;
 
     /**

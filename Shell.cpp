@@ -1,12 +1,14 @@
 #include "Shell.h"
 #include <vector>
 #include <algorithm>
-#include <iomanip>
+
+Shell::Shell(bool windows) : running(false), windows(windows), prompt("> ") {}
 
 void Shell::launch() {
     running = true;
     std::cout << "Welcome to the interactive dictionary.\nUse \"help\" or \"h\" to get a list of all accepted commands." << std::endl;
     while (running) {
+        std::cout << prompt;
         std::string line;
         std::getline(std::cin, line);
         run_line(line);
@@ -66,13 +68,17 @@ void Shell::run_line(std::string &cmd) {
 
 void Shell::run_exit() {
     std::cout << "Are you sure you want to leave the dictionary shell? [y/n] ";
-    char answer;
-    std::cin >> answer;
+    std::string answer;
+    std::getline(std::cin, answer);
+    std::transform(answer.begin(), answer.end(), answer.begin(),
+                   [](unsigned char c){ return std::tolower(c); });
 checkAnswer:
-    if (answer == 'y' || answer == 'Y') running = false;
-    else if (answer != 'n' && answer != 'N') {
+    if (answer == "y" || answer == "yes") running = false;
+    else if (answer != "n" && answer != "no") {
         std::cout << "Are you sure you want to leave the dictionary shell? [y/n] ";
-        std::cin >> answer;
+        std::getline(std::cin, answer);
+        std::transform(answer.begin(), answer.end(), answer.begin(),
+                       [](unsigned char c){ return std::tolower(c); });
         goto checkAnswer;
     }
 }
