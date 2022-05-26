@@ -17,3 +17,7 @@ void Woordenboek::addWoord(const string woord) {
 void Woordenboek::minimaliseer() {
 
 }
+
+NFA Woordenboek::combineer(NFA dict1, NFA dict2) {
+
+}

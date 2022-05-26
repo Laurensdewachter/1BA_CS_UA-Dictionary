@@ -3,3 +3,196 @@
 //
 
 #include "NFA.h"
+#include <iostream>
+
+NFA::NFA() {}
+
+NFA::NFA(string filename) {
+    ifstream input(filename);
+
+    json j;
+    input >> j;
+    // tonen op het scherm
+
+    type = j["type"];
+    for(auto i:j["alphabet"]){
+        alphabet.push_back(i);
+    }
+    for(auto i:j["states"]){
+        if (i["starting"] == true){
+            StartingState = string(i["name"]);
+            CurrentState = string(i["name"]);
+        }
+        if (i["accepting"] == true){
+            FinalStates.push_back(i["name"]);
+        }
+    }
+    for(auto i:j["transitions"]){
+        transitions[i["from"]].push_back({i["input"],i["to"]});
+    }
+}
+bool NFA::accepts(string String) {
+    for (auto i:String) {
+        for (auto s:transitions[CurrentState]) {
+            if(s[0] == string(1,i)){
+                CurrentState = s[1];
+                break;
+            }
+        }
+    }
+    std::vector<string>::iterator it;
+    it = std::find(FinalStates.begin(), FinalStates.end(), CurrentState);
+    if (it != FinalStates.end()){
+        return true;
+    }
+    else{
+        return false;
+    }
+}
+
+void NFA::print() {
+    vector<map<string,nlohmann::json>> states;
+    for (auto i:transitions){
+        nlohmann::json state;
+        state["name"] = i.first; //string
+        state["starting"] = (i.first == StartingState); //bool
+        std::vector<string>::iterator it;
+        it = std::find(FinalStates.begin(), FinalStates.end(), i.first);
+        if(it != FinalStates.end()){
+            state["accepting"] = true; //bool
+        }
+        states.push_back(state);
+    }
+    vector<map<string,string>> Transitions;
+    for(auto i:transitions){
+        map<string, string> transition;
+        for(auto j:i.second){
+            transition["from"] =  i.first;
+            transition["to"] = j[1];
+            transition["input"] = j[0];
+
+            Transitions.push_back(transition);
+        }
+    }
+
+
+    json j{
+            {"type", type},
+            {"alphabet", alphabet},
+            {"states", states},
+            {"transitions", Transitions}
+    };
+    cout << setw(4) << j << endl;
+}
+
+//source function = https://stackoom.com/en/question/7dv
+string NFA::bool_as_text(bool b) {
+    if (b){
+        return "true";
+    }
+    else{
+        return "false";
+    }
+
+}
+
+DFA NFA::toDFA() {
+    DFA dfa = DFA();
+    dfa.setType("DFA");
+    dfa.setAlphabet(alphabet);
+    dfa.setStartingState("{" + StartingState + "}");
+    map<string,vector<vector<string>>> t;
+    map<string, vector<vector<string>>> oldmap;
+    int oldsize = 1;
+    for (auto j: alphabet){
+        string str = "{";
+        for (auto k:transitions[StartingState]){
+            if (k[0] == j){
+                str += k[1] + ",";
+            }
+        }
+        if (str != "{"){
+            str.pop_back();
+        }
+        str += "}";
+        t["{" + StartingState + "}"].push_back({j, str});
+
+        if (t.find(str) == t.end()){
+            t[str];
+        }
+    }
+    oldmap["{" + StartingState + "}"] = t["{" + StartingState + "}"];
+    map<string, vector<vector<string>>> newmap = t;
+    int newsize = t.size();
+    while (oldsize != newsize){
+        oldsize = t.size();
+        for (auto i:newmap){
+            if (oldmap.find(i.first) == oldmap.end()){
+                string str = i.first.substr(1, i.first.size()-2);
+
+                stringstream ss(str);
+                vector<string> states;
+
+                while (ss.good()) {
+                    string substr;
+                    getline(ss, substr, ',');
+                    states.push_back(substr);
+                }
+
+                for (auto l: alphabet){
+                    vector<string> strvec;
+                    for (auto j: states){
+                        vector<vector<string>> k = transitions[j];
+                        for (auto m:k){
+                            if (m[0] == l) {
+                                std::vector<string>::iterator it;
+                                it = std::find(strvec.begin(), strvec.end(), m[1]);
+                                if (it == strvec.end()) {
+                                    strvec.push_back(m[1]);
+                                }
+                            }
+                        }
+                    }
+                    sort(strvec.begin(), strvec.end());
+                    std::ostringstream vts;
+                    if (!strvec.empty())
+                    {
+                        std::copy(strvec.begin(), strvec.end()-1,
+                                  std::ostream_iterator<string>(vts, ","));
+                        vts << strvec.back();
+                    }
+                    string string1 = "{" + vts.str() + "}";
+                    t[i.first].push_back({l, string1});
+                    if (t.find(string1) == t.end()){
+                        t[string1];
+                    }
+                }
+            }
+        }
+        oldmap = newmap;
+        newmap = t;
+        newsize = t.size();
+    }
+    dfa.setTransitions(t);
+    for (auto i:t){
+        string str = i.first.substr(1, i.first.size()-2);
+
+        stringstream ss(str);
+        vector<string> states;
+
+        while (ss.good()) {
+            string substr;
+            getline(ss, substr, ',');
+            states.push_back(substr);
+        }
+        for (auto j:states){
+            std::vector<string>::iterator it;
+            it = std::find(FinalStates.begin(), FinalStates.end(), j);
+            if(it != FinalStates.end()){
+                dfa.finalPush(i.first);
+                break;
+            }
+        }
+    }
+    return dfa;
+}

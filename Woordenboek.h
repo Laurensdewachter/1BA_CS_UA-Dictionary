@@ -38,6 +38,12 @@ public:
      * Post: NFA boek is geminimaliseerd
      */
     void minimaliseer();
+
+    /*
+     * Pre: Er bestaan twee niet lege woordenboeken
+     * Post: Er bestaat een nieuwe NFA (woordenboek) die de combinatie is van de twee gegeven woordenboeken
+     */
+    NFA combineer(NFA dict1, NFA dict2);
 };
 
 
