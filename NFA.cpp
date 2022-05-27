@@ -385,7 +385,7 @@ vector<string> NFA::pushalf(vector<string> alf) {
 }
 
 void NFA::makeStochastic(vector<string>& woorden) {
-
+    stochasticTransitions = transitions;
     for(auto i:transitions[StartingState]){
         string str = i[0];
         int teller = 0;
@@ -450,7 +450,27 @@ void NFA::makeBranchStoch(string letters, vector<string> woorden, int number) {
 
 }
 
-string NFA::getSuggestion(string letters) {
-
-    return std::string();
+string NFA::getSuggestion(string letters, bool b) {
+    if(b) {
+        if (stochasticTransitions[letters].empty() and
+            find(FinalStates.begin(), FinalStates.end(), letters) != FinalStates.end()) {
+            return letters;
+        } else if (stochasticTransitions[letters].empty()) {
+            return "";
+        }
+    }
+    int number = stoi(stochasticTransitions[letters][0][2]);
+    string trans = stochasticTransitions[letters][0][0];
+    for(auto i:stochasticTransitions[letters]){
+        if(stoi(i[2])>number){
+            number = stoi(i[2])>number;
+            trans = i[0];
+        }
+    }
+    if(find(FinalStates.begin(), FinalStates.end(), letters+trans) != FinalStates.end()){
+        return letters+trans;
+    }
+    else{
+        getSuggestion(letters+trans, false);
+    }
 }

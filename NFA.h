@@ -70,7 +70,7 @@ public:
 
     void makeBranchStoch(string letters, vector<string> woorden, int number);
 
-    string getSuggestion(string letters);
+    string getSuggestion(string letters, bool b = true);
 
 };
 
