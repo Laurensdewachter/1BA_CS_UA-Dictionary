@@ -22,3 +22,8 @@ NFA Woordenboek::combineer(NFA dict1, NFA dict2) {
     NFA product(dict1, dict2, false);
     return product;
 }
+
+string Woordenboek::giveSuggestion(string letters) {
+    NFA s = NFA::make
+    return std::string();
+}

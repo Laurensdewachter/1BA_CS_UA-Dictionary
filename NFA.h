@@ -62,6 +62,10 @@ public:
     void setCurrentState(const string &currentState);
 
     vector<string> pushalf(vector<string> alf);
+
+    NFA makeStochastic(NFA &nfa, vector<string> &woorden);
+
+    void addState(string from, string to, string transition, bool final);
 };
 
 

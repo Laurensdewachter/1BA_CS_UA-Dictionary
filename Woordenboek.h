@@ -44,6 +44,13 @@ public:
      * Post: Er bestaat een nieuwe NFA (woordenboek) die de combinatie is van de twee gegeven woordenboeken
      */
     NFA combineer(NFA dict1, NFA dict2);
+
+    /*
+     * Pre: Er bestaat een niet lege woordenboeken
+     * Post: /
+     * return: Het woord dat het meest waarschijnlijke is om getypt te worden.
+     */
+    string giveSuggestion(string letters);
 };
 
 

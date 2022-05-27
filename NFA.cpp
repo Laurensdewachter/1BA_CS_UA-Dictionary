@@ -384,4 +384,23 @@ vector<string> NFA::pushalf(vector<string> alf) {
     return alphabet;
 }
 
+NFA NFA::makeStochastic(NFA& nfa, vector<string>& woorden) {
 
+    map<string, vector<string>> map;
+    return NFA();
+}
+
+void NFA::addState(string from, string to, string transition, bool final) {
+    if(std::find(alphabet.begin(), alphabet.end(), transition) == alphabet.end()){
+        alphabet.push_back(transition);
+    }
+    if(final){
+        FinalStates.push_back(to);
+    }
+    if(transitions.find(from) != transitions.end()){
+        transitions.find(from)->second.push_back({transition, to});
+    }
+    else{
+        transitions[from] = {{transition, to}};
+    }
+}
