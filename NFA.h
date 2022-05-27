@@ -27,6 +27,7 @@ class NFA {
     vector<string> FinalStates;
     vector<string> alphabet;
     map<string,vector<vector<string>>> transitions;
+    map<string,vector<vector<string>>> stochasticTransitions;
 
 public:
     NFA();
@@ -63,9 +64,14 @@ public:
 
     vector<string> pushalf(vector<string> alf);
 
-    NFA makeStochastic(NFA &nfa, vector<string> &woorden);
+    void makeStochastic(vector<string> &woorden);
 
     void addState(string from, string to, string transition, bool final);
+
+    void makeBranchStoch(string letters, vector<string> woorden, int number);
+
+    string getSuggestion(string letters);
+
 };
 
 

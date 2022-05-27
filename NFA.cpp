@@ -384,10 +384,28 @@ vector<string> NFA::pushalf(vector<string> alf) {
     return alphabet;
 }
 
-NFA NFA::makeStochastic(NFA& nfa, vector<string>& woorden) {
+void NFA::makeStochastic(vector<string>& woorden) {
 
-    map<string, vector<string>> map;
-    return NFA();
+    for(auto i:transitions[StartingState]){
+        string str = i[0];
+        int teller = 0;
+        vector<string> newWords;
+        for(auto j:woorden){
+            string substr = j.substr(0,1);
+            if(substr == str){
+                newWords.push_back(j);
+                teller ++;
+            }
+        }
+        for(auto k: stochasticTransitions[StartingState]){
+            if(k[0] == str){
+                k.push_back(to_string(teller));
+                k.push_back(to_string(woorden.size()));
+                break;
+            }
+        }
+        makeBranchStoch(str, newWords, 2);
+    }
 }
 
 void NFA::addState(string from, string to, string transition, bool final) {
@@ -403,4 +421,36 @@ void NFA::addState(string from, string to, string transition, bool final) {
     else{
         transitions[from] = {{transition, to}};
     }
+}
+
+void NFA::makeBranchStoch(string letters, vector<string> woorden, int number) {
+
+    for(auto i:transitions[letters]){
+        vector<string> newWords = {};
+        int teller = 0;
+        string str = letters+i[0];
+        for(auto j:woorden){
+            string substr = j.substr(0,number);
+            if(substr == str){
+                newWords.push_back(j);
+                teller ++;
+            }
+        }
+        for(auto k: stochasticTransitions[letters]){
+            if(k[0] == str){
+                k.push_back(to_string(teller));
+                k.push_back(to_string(woorden.size()));
+                break;
+            }
+        }
+        if(!transitions[str].empty()){
+            makeBranchStoch(str, newWords, number+1);
+        }
+    }
+
+}
+
+string NFA::getSuggestion(string letters) {
+
+    return std::string();
 }

@@ -24,6 +24,7 @@ NFA Woordenboek::combineer(NFA dict1, NFA dict2) {
 }
 
 string Woordenboek::giveSuggestion(string letters) {
-    NFA s = NFA::make
+    boek.makeStochastic(woorden);
+
     return std::string();
 }
