@@ -19,5 +19,6 @@ void Woordenboek::minimaliseer() {
 }
 
 NFA Woordenboek::combineer(NFA dict1, NFA dict2) {
-
+    NFA product(dict1, dict2, false);
+    return product;
 }
