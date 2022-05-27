@@ -5,7 +5,10 @@
 #include "NFA.h"
 #include <iostream>
 
-NFA::NFA() {}
+NFA::NFA() {
+    transitions={};
+    alphabet={};
+}
 
 NFA::NFA(string filename) {
     ifstream input(filename);
@@ -358,7 +361,7 @@ void NFA::setAlphabet(const vector<string> &alphabet) {
     NFA::alphabet = alphabet;
 }
 
-const map<string, vector<vector<string>>> &NFA::getTransitions() const {
+map<string, vector<vector<string>>> &NFA::getTransitions() {
     return transitions;
 }
 
@@ -382,6 +385,21 @@ vector<string> NFA::pushalf(vector<string> alf) {
         }
     }
     return alphabet;
+}
+
+void NFA::addState(string from, string to, string transition, bool final) {
+    if(find(alphabet.begin(),alphabet.end(),transition)==alphabet.end()){
+        alphabet.push_back(transition);
+    }
+    if(final){
+        FinalStates.push_back(to);
+    }
+    if(transitions.find(from)!=transitions.end()){
+        transitions.find(from)->second.push_back({transition,to});
+    }
+    else{
+        transitions[from]={{transition,to}};
+    }
 }
 
 
