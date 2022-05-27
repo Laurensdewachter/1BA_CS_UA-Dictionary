@@ -384,4 +384,93 @@ vector<string> NFA::pushalf(vector<string> alf) {
     return alphabet;
 }
 
+void NFA::makeStochastic(vector<string>& woorden) {
+    stochasticTransitions = transitions;
+    for(auto i:transitions[StartingState]){
+        string str = i[0];
+        int teller = 0;
+        vector<string> newWords;
+        for(auto j:woorden){
+            string substr = j.substr(0,1);
+            if(substr == str){
+                newWords.push_back(j);
+                teller ++;
+            }
+        }
+        for(auto k: stochasticTransitions[StartingState]){
+            if(k[0] == str){
+                k.push_back(to_string(teller));
+                k.push_back(to_string(woorden.size()));
+                break;
+            }
+        }
+        makeBranchStoch(str, newWords, 2);
+    }
+}
 
+void NFA::addState(string from, string to, string transition, bool final) {
+    if(std::find(alphabet.begin(), alphabet.end(), transition) == alphabet.end()){
+        alphabet.push_back(transition);
+    }
+    if(final){
+        FinalStates.push_back(to);
+    }
+    if(transitions.find(from) != transitions.end()){
+        transitions.find(from)->second.push_back({transition, to});
+    }
+    else{
+        transitions[from] = {{transition, to}};
+    }
+}
+
+void NFA::makeBranchStoch(string letters, vector<string> woorden, int number) {
+
+    for(auto i:transitions[letters]){
+        vector<string> newWords = {};
+        int teller = 0;
+        string str = letters+i[0];
+        for(auto j:woorden){
+            string substr = j.substr(0,number);
+            if(substr == str){
+                newWords.push_back(j);
+                teller ++;
+            }
+        }
+        for(auto k: stochasticTransitions[letters]){
+            if(k[0] == str){
+                k.push_back(to_string(teller));
+                k.push_back(to_string(woorden.size()));
+                break;
+            }
+        }
+        if(!transitions[str].empty()){
+            makeBranchStoch(str, newWords, number+1);
+        }
+    }
+
+}
+
+string NFA::getSuggestion(string letters, bool b) {
+    if(b) {
+        if (stochasticTransitions[letters].empty() and
+            find(FinalStates.begin(), FinalStates.end(), letters) != FinalStates.end()) {
+            return letters;
+        } else if (stochasticTransitions[letters].empty()) {
+            return "";
+        }
+    }
+    int number = stoi(stochasticTransitions[letters][0][2]);
+    string trans = stochasticTransitions[letters][0][0];
+    for(auto i:stochasticTransitions[letters]){
+        if(stoi(i[2])>number){
+            number = stoi(i[2])>number;
+            trans = i[0];
+        }
+    }
+    if(find(FinalStates.begin(), FinalStates.end(), letters+trans) != FinalStates.end()){
+        return letters+trans;
+    }
+    else{
+        getSuggestion(letters+trans, false);
+    }
+}
