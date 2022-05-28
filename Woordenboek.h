@@ -51,6 +51,13 @@ public:
      * return: Het woord dat het meest waarschijnlijke is om getypt te worden.
      */
     string giveSuggestion(string letters);
+
+    /*
+     * Pre: woordLengte i niet 0
+     * Post: /
+     * return: een woordenboek met woorden van lengte n
+     */
+    Woordenboek getWoordenboekVanLengte(unsigned int woordLengte);
 };
 
 
