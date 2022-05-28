@@ -62,7 +62,7 @@ public:
 
     void setCurrentState(const string &currentState);
 
-    vector<string> pushalf(vector<string> alf);
+    void pushalf(vector<string> alf);
 
     void makeStochastic(vector<string> &woorden);
 
@@ -71,6 +71,8 @@ public:
     void makeBranchStoch(string letters, vector<string> woorden, int number);
 
     string getSuggestion(string letters, bool b = true);
+
+    void pushFinal(vector<string> final);
 
 };
 

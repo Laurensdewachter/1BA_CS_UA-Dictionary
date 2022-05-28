@@ -21,6 +21,8 @@ public:
      */
     Woordenboek();
 
+    Woordenboek(const vector<string> &woorden, const NFA &boek);
+
     /*
      * Preconditie: Er is een woordenlijst om woordenboek op te baseren
      * Postcondtie: Woordenboek aangemaakt met woorden van woordenlijst erin
@@ -33,6 +35,8 @@ public:
      */
     void addWoord(const string woord);
 
+    void pushWords(vector<string> words);
+
     /*
      * Pre: Er bestaat een niet leeg woordenboek
      * Post: NFA boek is geminimaliseerd
@@ -43,7 +47,7 @@ public:
      * Pre: Er bestaan twee niet lege woordenboeken
      * Post: Er bestaat een nieuwe NFA (woordenboek) die de combinatie is van de twee gegeven woordenboeken
      */
-    NFA combineer(NFA dict1, NFA dict2);
+    static Woordenboek combineer(Woordenboek dict1, Woordenboek dict2);
 
     /*
      * Pre: Er bestaat een niet lege woordenboeken
@@ -51,7 +55,12 @@ public:
      * return: Het woord dat het meest waarschijnlijke is om getypt te worden.
      */
     string giveSuggestion(string letters);
+
+
+    static Woordenboek gemeenschappelijk(Woordenboek dict1, Woordenboek dict2);
 };
+
+
 
 
 #endif //DICTIONARY_WOORDENBOEK_H
