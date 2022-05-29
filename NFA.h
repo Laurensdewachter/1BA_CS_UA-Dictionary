@@ -12,6 +12,7 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <algorithm>
 #include "json.hpp"
 #include <map>
 #include "DFA.h"
@@ -74,6 +75,7 @@ public:
 
     void pushFinal(vector<string> final);
 
+    void removeUnreachable();
 };
 
 
