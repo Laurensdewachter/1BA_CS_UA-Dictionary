@@ -32,6 +32,7 @@ NFA::NFA(string filename) {
     }
 }
 bool NFA::accepts(string String) {
+    CurrentState = StartingState;
     for (auto i:String) {
         for (auto s:transitions[CurrentState]) {
             if(s[0] == string(1,i)){
@@ -198,128 +199,42 @@ DFA NFA::toDFA() {
 }
 
 NFA::NFA(NFA nfa1, NFA nfa2, bool b) {
-    type = "DFA";
-    alphabet = (nfa1.getAlphabet());
-    pushalf(nfa2.getAlphabet());
-    StartingState ="(" + nfa1.getStartingState() + "," + nfa2.getStartingState() + ")";
-    map<string,vector<vector<string>>> t;
-    t["(" + nfa1.getStartingState() + "," + nfa2.getStartingState() + ")"] = {};
-    map<string, vector<vector<string>>> oldmap = t;
-    int oldsize = 1;
-    for (auto j: alphabet){
-        string str = "(";
-        vector<string> state;
-        map<string, vector<vector<string>>> tra = nfa1.getTransitions();
-        for (auto i:tra[nfa1.getStartingState()]){
-            if (i[0] == j){
-                state.push_back(i[1]);
-                break;
+    type = "NFA";
+    if (b) {
+        for(auto i:nfa1.alphabet){
+            if(find(nfa2.alphabet.begin(), nfa2.alphabet.end(), i) != nfa2.alphabet.end()){
+                alphabet.push_back(i);
             }
         }
-        tra = nfa2.getTransitions();
-        for (auto i:tra[nfa2.getStartingState()]){
-            if (i[0] == j){
-                state.push_back(i[1]);
-                break;
+        StartingState = "Start";
+        for(auto i:nfa1.FinalStates){
+            if(find(nfa2.FinalStates.begin(), nfa2.FinalStates.end(), i) != nfa2.FinalStates.end()){
+                FinalStates.push_back(i);
             }
         }
-        str = "(" + state[0] + "," + state[1] + ")";
-        t["(" + nfa1.getStartingState() + "," + nfa2.getStartingState() + ")"].push_back({j, str});
-        if (t.find(str) == t.end()){
-            t[str];
-        }
-    }
-    map<string, vector<vector<string>>> newmap = t;
-    int newsize = t.size();
-    while (oldsize != newsize){
-        oldsize = t.size();
-        for (auto i:newmap) {
-            if (oldmap.find(i.first) == oldmap.end()) {
-                string str = i.first.substr(1, i.first.size() - 2);
-
-                stringstream ss(str);
-                vector<string> states;
-
-                while (ss.good()) {
-                    string substr;
-                    getline(ss, substr, ',');
-                    states.push_back(substr);
-                }
-                vector<string> strvec;
-                for (auto l: alphabet) {
-                    vector<string> state;
-                    map<string, vector<vector<string>>> tra = nfa1.getTransitions();
-                    for (auto i: tra[states[0]]) {
-                        if (i[0] == l) {
-                            state.insert(state.begin(), i[1]);
-                        }
+        for(auto i:nfa1.transitions){
+            if(nfa2.transitions.find(i.first) != nfa2.transitions.end()){
+                for(auto j:i.second){
+                    for(auto k: nfa2.transitions[i.first]){
+                        if(k[1] == j[1]){
+                            addState(i.first, j[1], j[0], std::find(FinalStates.begin(), FinalStates.end(), j[1]) != FinalStates.end());
                     }
-                    tra = nfa2.getTransitions();
-                    for (auto i: tra[states[1]]) {
-                        if (i[0] == l) {
-                            state.push_back(i[1]);
-                        }
-                    }
-                    str = "(" + state[0] + "," + state[1] + ")";
-                    t[i.first].push_back({l, str});
-                    if (t.find(str) == t.end()) {
-                        t[str];
                     }
                 }
             }
         }
-        oldmap = newmap;
-        newmap = t;
-        newsize = t.size();
-    }
-    transitions = t;
-    for (auto i:t){
-        string str = i.first.substr(1, i.first.size()-2);
-
-        stringstream ss(str);
-        vector<string> states;
-
-        while (ss.good()) {
-            string substr;
-            getline(ss, substr, ',');
-            states.push_back(substr);
-        }
-        if (b){
-            int teller = 0;
-            for (auto j:states){
-
-                if (nfa1.getTransitions().find(j) != nfa1.getTransitions().end()) {
-                    auto result = std::find(nfa1.getFinalStates().begin(), nfa1.getFinalStates().end(), j);
-                    if(result != nfa1.getFinalStates().end()){
-                        teller += 1;
-                    }
-                }
-                else {
-                    auto result = std::find(nfa2.getFinalStates().begin(), nfa2.getFinalStates().end(), j);
-                    if(result != nfa2.getFinalStates().end()){
-                        teller += 1;
-                    }
-                }
-            }
-            if(teller == 2){
-                FinalStates.push_back(i.first);
-            }
-        }
-        if (!b){
-            for (auto j:states){
-                if (nfa1.getTransitions().find(j) != nfa1.getTransitions().end()) {
-                    auto result = std::find(nfa1.getFinalStates().begin(), nfa1.getFinalStates().end(), j);
-                    if(result != nfa1.getFinalStates().end()){
-                        FinalStates.push_back(i.first);
-                        break;
-                    }
-                }
-                else {
-                    auto result = std::find(nfa2.getFinalStates().begin(), nfa2.getFinalStates().end(), j);
-                    if(result != nfa2.getFinalStates().end()){
-                        FinalStates.push_back(i.first);
-                        break;
-                    }
+    } else {
+        alphabet = nfa1.alphabet;
+        pushalf(nfa2.alphabet);
+        StartingState = "Start";
+        FinalStates = nfa1.FinalStates;
+        pushFinal(nfa2.FinalStates);
+        transitions = nfa1.transitions;
+        for (auto i: nfa2.transitions) {
+            for (auto j: i.second) {
+                if (transitions.find(j[1]) == transitions.end()) {
+                    addState(i.first, j[1], j[0],
+                             std::find(FinalStates.begin(), FinalStates.end(), j[1]) != FinalStates.end());
                 }
             }
         }
@@ -327,7 +242,7 @@ NFA::NFA(NFA nfa1, NFA nfa2, bool b) {
 }
 
 const string &NFA::getType() const {
-
+    return type;
 }
 
 void NFA::setType(const string &type) {
@@ -374,14 +289,13 @@ void NFA::setCurrentState(const string &currentState) {
     CurrentState = currentState;
 }
 
-vector<string> NFA::pushalf(vector<string> alf) {
+void NFA::pushalf(vector<string> alf) {
     for (auto i:alf){
         auto result = std::find(alphabet.begin(), alphabet.end(), i);
         if(result == alphabet.end()) {
             alphabet.push_back(i);
         }
     }
-    return alphabet;
 }
 
 void NFA::makeStochastic(vector<string>& woorden) {
@@ -397,8 +311,8 @@ void NFA::makeStochastic(vector<string>& woorden) {
                 teller ++;
             }
         }
-        for(auto k: stochasticTransitions[StartingState]){
-            if(k[0] == str){
+        for(auto &k: stochasticTransitions[StartingState]){
+            if(k[1] == str){
                 k.push_back(to_string(teller));
                 k.push_back(to_string(woorden.size()));
                 break;
@@ -412,14 +326,23 @@ void NFA::addState(string from, string to, string transition, bool final) {
     if(std::find(alphabet.begin(), alphabet.end(), transition) == alphabet.end()){
         alphabet.push_back(transition);
     }
-    if(final){
+    if(final and find(FinalStates.begin(), FinalStates.end(), to) == FinalStates.end()){
         FinalStates.push_back(to);
     }
-    if(transitions.find(from) != transitions.end()){
-        transitions.find(from)->second.push_back({transition, to});
+    if(transitions[from].empty()){
+        transitions[from].push_back({transition, to});
     }
     else{
-        transitions[from] = {{transition, to}};
+        bool b = true;
+        for(auto i:transitions[from]){
+            if(i[0] == transition){
+                b = false;
+                break;
+            }
+        }
+        if(b){
+            transitions[from].push_back({transition, to});
+        }
     }
 }
 
@@ -436,8 +359,8 @@ void NFA::makeBranchStoch(string letters, vector<string> woorden, int number) {
                 teller ++;
             }
         }
-        for(auto k: stochasticTransitions[letters]){
-            if(k[0] == str){
+        for(auto& k: stochasticTransitions[letters]){
+            if(k[1] == str){
                 k.push_back(to_string(teller));
                 k.push_back(to_string(woorden.size()));
                 break;
@@ -452,6 +375,9 @@ void NFA::makeBranchStoch(string letters, vector<string> woorden, int number) {
 
 string NFA::getSuggestion(string letters, bool b) {
     if(b) {
+        if(letters.empty()){
+            letters = "Start";
+        }
         if (stochasticTransitions[letters].empty() and
             find(FinalStates.begin(), FinalStates.end(), letters) != FinalStates.end()) {
             return letters;
@@ -463,14 +389,64 @@ string NFA::getSuggestion(string letters, bool b) {
     string trans = stochasticTransitions[letters][0][0];
     for(auto i:stochasticTransitions[letters]){
         if(stoi(i[2])>number){
-            number = stoi(i[2])>number;
+            number = stoi(i[2]);
             trans = i[0];
         }
     }
-    if(find(FinalStates.begin(), FinalStates.end(), letters+trans) != FinalStates.end()){
-        return letters+trans;
+    if(letters == "Start"){
+        return getSuggestion(trans, false);
+    }
+    else if(find(FinalStates.begin(), FinalStates.end(), letters+trans) != FinalStates.end()){
+        string str = letters+trans;
+        return str;
     }
     else{
-        getSuggestion(letters+trans, false);
+        return getSuggestion(letters+trans, false);
     }
+}
+
+void NFA::pushFinal(vector<string> final) {
+    for (auto i:final){
+        auto result = std::find(FinalStates.begin(), FinalStates.end(), i);
+        if(result == FinalStates.end()) {
+            FinalStates.push_back(i);
+        }
+    }
+}
+
+void NFA::removeUnreachable() {
+    // http://www.cs.um.edu.mt/gordon.pace/Research/Software/Relic/Transformations/FSA/remove-unreachable.html
+    vector<string> preR;
+    vector<string> R = {StartingState};
+    while (preR != R) {
+        preR = R;
+        vector<string> M;
+        for (const auto &preState: preR) {     // Voor elke state
+            for (const auto &nextTransition: transitions[preState]) {    // voor elke letter
+                M.insert(M.end(), nextTransition.begin() + 1, nextTransition.end());
+            }
+        }
+        sort(M.begin(), M.end());
+        R.clear();
+        set_union(preR.begin(), preR.end(), M.begin(), M.end(), back_inserter(R));
+    }
+    map<string,vector<vector<string>>> newTransition;
+    for (auto &transition: transitions) {
+        if (find(R.begin(), R.end(), transition.first) == R.end()) {
+            continue;
+        }
+        for (int i = 0; i < transition.second.size(); ++i) {
+            auto &transitionSymbol = transition.second[i];
+            newTransition[transition.first].push_back({transitionSymbol[0]});
+            sort(transitionSymbol.begin() + 1, transitionSymbol.end());
+            set_intersection(transitionSymbol.begin() + 1, transitionSymbol.end(), R.begin(), R.end(),
+                             back_inserter(newTransition[transition.first][i]));
+        }
+    }
+    transitions = newTransition;
+
+    vector<string> oldFinalStates = FinalStates;
+    FinalStates.clear();
+    sort(oldFinalStates.begin(), oldFinalStates.end());
+    set_intersection(oldFinalStates.begin(), oldFinalStates.end(), R.begin(), R.end(), back_inserter(FinalStates));
 }
