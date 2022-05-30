@@ -76,3 +76,70 @@ Woordenboek Woordenboek::gemeenschappelijk(Woordenboek dict1, Woordenboek dict2)
     }
     return Woordenboek(woorden, product);
 }
+
+Woordenboek Woordenboek::getWoordenboekVanLengte(unsigned int woordLengte) {
+    Woordenboek woordenboekLengte = Woordenboek();
+    for (const auto &woord: woorden) {
+        if (woord.size() == woordLengte)
+            woordenboekLengte.woorden.push_back(woord);
+    }
+    auto transition = boek.getTransitions();
+    auto finalstates = boek.getFinalStates();
+    vector<string> curStates = {boek.getStartingState()};
+    unsigned int i = 0;
+    while (i != woordLengte) {
+        i++;
+        vector<string> newStates;
+        for (const auto &preState: curStates) {     // Voor elke state
+            for (const auto &nextTransition: transition[preState]) {    // voor elke letter
+                for (int j = 1; j < nextTransition.size(); ++j) {       // voor elke transitie van een letter
+                    auto finalstateIterator = find(finalstates.begin(), finalstates.end(), nextTransition[j]);
+                    if (finalstateIterator != finalstates.end() &&
+                        i != woordLengte) {     // als er een final state is met een kleinere lengte dan woordLengte
+                        finalstates.erase(finalstateIterator);  // verwijder dan deze uit finalstates
+                    } else {
+                        newStates.push_back(nextTransition[j]);
+                    }
+                }
+            }
+        }
+        curStates = newStates;
+    }
+    for (const auto &curState: curStates) {
+        transition.erase(curState);
+    }
+    auto newBoek = NFA(boek);
+    newBoek.setTransitions(transition);
+    newBoek.setFinalStates(finalstates);
+    newBoek.removeUnreachable();
+    woordenboekLengte.boek = newBoek;
+    woordenboekLengte.minimaliseer();
+    return woordenboekLengte;
+}
+
+void Woordenboek::checkText(const char *inputFile, const char *outputFile) { //Alle leestekens worden nu nog naar spatie's omgezet
+    ifstream inFile(inputFile);
+    ofstream outFile(outputFile);
+    if (not inFile.is_open() || not outFile.is_open()) {
+        return;
+    }
+    string line;
+    char *token;
+    while (getline(inFile, line)) {
+        char *cline = &line[0];
+        token = strtok(cline, " ,.!?");
+        while (token != NULL) {
+            if (not boek.accepts(token)) {
+                outFile << "<b style=\"color:red\">" << token << "</b>";
+            } else {
+                outFile << token;
+            }
+            token = strtok(NULL, " ,.!?");
+            if (token != NULL)
+                outFile << ' ';
+        }
+        outFile << '\n';
+    }
+    inFile.close();
+    outFile.close();
+}

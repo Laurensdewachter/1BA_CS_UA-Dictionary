@@ -32,6 +32,7 @@ NFA::NFA(string filename) {
     }
 }
 bool NFA::accepts(string String) {
+    CurrentState = StartingState;
     for (auto i:String) {
         for (auto s:transitions[CurrentState]) {
             if(s[0] == string(1,i)){
@@ -411,4 +412,41 @@ void NFA::pushFinal(vector<string> final) {
             FinalStates.push_back(i);
         }
     }
+}
+
+void NFA::removeUnreachable() {
+    // http://www.cs.um.edu.mt/gordon.pace/Research/Software/Relic/Transformations/FSA/remove-unreachable.html
+    vector<string> preR;
+    vector<string> R = {StartingState};
+    while (preR != R) {
+        preR = R;
+        vector<string> M;
+        for (const auto &preState: preR) {     // Voor elke state
+            for (const auto &nextTransition: transitions[preState]) {    // voor elke letter
+                M.insert(M.end(), nextTransition.begin() + 1, nextTransition.end());
+            }
+        }
+        sort(M.begin(), M.end());
+        R.clear();
+        set_union(preR.begin(), preR.end(), M.begin(), M.end(), back_inserter(R));
+    }
+    map<string,vector<vector<string>>> newTransition;
+    for (auto &transition: transitions) {
+        if (find(R.begin(), R.end(), transition.first) == R.end()) {
+            continue;
+        }
+        for (int i = 0; i < transition.second.size(); ++i) {
+            auto &transitionSymbol = transition.second[i];
+            newTransition[transition.first].push_back({transitionSymbol[0]});
+            sort(transitionSymbol.begin() + 1, transitionSymbol.end());
+            set_intersection(transitionSymbol.begin() + 1, transitionSymbol.end(), R.begin(), R.end(),
+                             back_inserter(newTransition[transition.first][i]));
+        }
+    }
+    transitions = newTransition;
+
+    vector<string> oldFinalStates = FinalStates;
+    FinalStates.clear();
+    sort(oldFinalStates.begin(), oldFinalStates.end());
+    set_intersection(oldFinalStates.begin(), oldFinalStates.end(), R.begin(), R.end(), back_inserter(FinalStates));
 }

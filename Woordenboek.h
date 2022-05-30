@@ -7,6 +7,7 @@
 
 #include <vector>
 #include <string>
+#include <iostream>
 #include "NFA.h"
 
 using namespace std;
@@ -56,13 +57,21 @@ public:
      */
     string giveSuggestion(string letters);
 
-
     /*
      * Pre: Er bestaan twee niet lege woordenboeken
      * Post: De gemeenschappelijke woorden van de twee woordenboeken zijn samengevoegd in één woordenboek.
      * return: Het nieuw gevormde woordenboek.
      */
     static Woordenboek gemeenschappelijk(Woordenboek dict1, Woordenboek dict2);
+
+    /*
+     * Pre: woordLengte i niet 0
+     * Post: /
+     * return: een woordenboek met woorden van lengte n
+     */
+    Woordenboek getWoordenboekVanLengte(unsigned int woordLengte);
+
+    void checkText(const char *inputFile, const char *outputFile);
 };
 
 
