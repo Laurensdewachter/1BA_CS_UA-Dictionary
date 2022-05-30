@@ -32,6 +32,7 @@ NFA::NFA(string filename) {
     }
 }
 bool NFA::accepts(string String) {
+    CurrentState = StartingState;
     for (auto i:String) {
         for (auto s:transitions[CurrentState]) {
             if(s[0] == string(1,i)){
