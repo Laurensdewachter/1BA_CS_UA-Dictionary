@@ -57,6 +57,11 @@ public:
      */
     string giveSuggestion(string letters);
 
+    /*
+     * Pre: Er bestaan twee niet lege woordenboeken
+     * Post: De gemeenschappelijke woorden van de twee woordenboeken zijn samengevoegd in één woordenboek.
+     * return: Het nieuw gevormde woordenboek.
+     */
     static Woordenboek gemeenschappelijk(Woordenboek dict1, Woordenboek dict2);
 
     /*
