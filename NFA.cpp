@@ -427,7 +427,7 @@ void NFA::removeUnreachable() {
         }
         sort(M.begin(), M.end());
         R.clear();
-        set_union(preR.begin(), preR.end(), M.begin(), M.end(), R.begin());
+        set_union(preR.begin(), preR.end(), M.begin(), M.end(), back_inserter(R));
     }
     map<string,vector<vector<string>>> newTransition;
     for (auto &transition: transitions) {
@@ -437,9 +437,9 @@ void NFA::removeUnreachable() {
         for (int i = 0; i < transition.second.size(); ++i) {
             auto &transitionSymbol = transition.second[i];
             newTransition[transition.first].push_back({transitionSymbol[0]});
-            sort(transitionSymbol.begin(), transitionSymbol.end());
+            sort(transitionSymbol.begin() + 1, transitionSymbol.end());
             set_intersection(transitionSymbol.begin() + 1, transitionSymbol.end(), R.begin(), R.end(),
-                             newTransition[transition.first][i].begin() + 1);
+                             back_inserter(newTransition[transition.first][i]));
         }
     }
     transitions = newTransition;
@@ -447,5 +447,5 @@ void NFA::removeUnreachable() {
     vector<string> oldFinalStates = FinalStates;
     FinalStates.clear();
     sort(oldFinalStates.begin(), oldFinalStates.end());
-    set_intersection(oldFinalStates.begin(), oldFinalStates.end(), R.begin(), R.end(), FinalStates.begin());
+    set_intersection(oldFinalStates.begin(), oldFinalStates.end(), R.begin(), R.end(), back_inserter(FinalStates));
 }

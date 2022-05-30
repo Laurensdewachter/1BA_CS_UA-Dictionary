@@ -86,7 +86,7 @@ Woordenboek Woordenboek::getWoordenboekVanLengte(unsigned int woordLengte) {
     auto transition = boek.getTransitions();
     auto finalstates = boek.getFinalStates();
     vector<string> curStates = {boek.getStartingState()};
-    unsigned int i = 1;
+    unsigned int i = 0;
     while (i != woordLengte) {
         i++;
         vector<string> newStates;
