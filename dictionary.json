@@ -1,0 +1,48 @@
+{
+    "alphabet": [
+        "t",
+        "e",
+        "s"
+    ],
+    "states": [
+        {
+            "name": "",
+            "starting": true
+        },
+        {
+            "name": "t",
+            "starting": false
+        },
+        {
+            "name": "te",
+            "starting": false
+        },
+        {
+            "name": "tes",
+            "starting": false
+        }
+    ],
+    "transitions": [
+        {
+            "from": "",
+            "input": "t",
+            "to": "t"
+        },
+        {
+            "from": "t",
+            "input": "e",
+            "to": "te"
+        },
+        {
+            "from": "te",
+            "input": "s",
+            "to": "tes"
+        },
+        {
+            "from": "tes",
+            "input": "t",
+            "to": "test"
+        }
+    ],
+    "type": ""
+}

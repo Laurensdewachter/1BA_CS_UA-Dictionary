@@ -1,14 +1,10 @@
-//
-// Created by dante on 25/05/22.
-//
-
 #include "Woordenboek.h"
 
 Woordenboek::Woordenboek(){}
 
+Woordenboek::Woordenboek(const vector<string> &woorden, const NFA &boek) : woorden(woorden), boek(boek) {}
 
-
-Woordenboek::Woordenboek(const string listName) {
+Woordenboek::Woordenboek(const string &listName) {
     boek.setStartingState("Start");
     boek.setCurrentState("Start");
     ifstream file(listName);
@@ -22,6 +18,8 @@ Woordenboek::Woordenboek(const string listName) {
         file.close();
     }
 }
+
+Woordenboek::~Woordenboek() {}
 
 void Woordenboek::addWoord(const string woord) {
     string totalString;
@@ -39,6 +37,10 @@ void Woordenboek::addWoord(const string woord) {
     }
 }
 
+void Woordenboek::save(std::ofstream &onstream) {
+    boek.print(onstream);
+}
+
 void Woordenboek::minimaliseer() {
 
 }
@@ -54,8 +56,6 @@ string Woordenboek::giveSuggestion(string letters) {
     string str = boek.getSuggestion(letters);
     return str;
 }
-
-Woordenboek::Woordenboek(const vector<string> &woorden, const NFA &boek) : woorden(woorden), boek(boek) {}
 
 void Woordenboek::pushWords(vector<string> words) {
     for (auto i:words){

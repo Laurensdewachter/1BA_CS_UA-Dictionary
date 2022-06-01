@@ -51,7 +51,7 @@ bool NFA::accepts(string String) {
     }
 }
 
-void NFA::print() {
+void NFA::print(std::ofstream &onstream) {
     vector<map<string,nlohmann::json>> states;
     for (auto i:transitions){
         nlohmann::json state;
@@ -83,7 +83,7 @@ void NFA::print() {
             {"states", states},
             {"transitions", Transitions}
     };
-    cout << setw(4) << j << endl;
+    onstream << setw(4) << j << endl;
 }
 
 //source function = https://stackoom.com/en/question/7dv

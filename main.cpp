@@ -1,17 +1,9 @@
-bool windows = false;
-#ifdef _WIN32
-    windows = true;
-#endif
-#ifdef _WIN64
-    windows = true;
-#endif
-
 #include <iostream>
 #include "Shell.h"
 #include "Woordenboek.h"
 
 int main() {
-    Shell cli(windows);
+    Shell cli;
     cli.launch();
 
     Woordenboek w = Woordenboek("../abc.txt");

@@ -1,8 +1,20 @@
+bool win = false;
+#ifdef _WIN32
+windows = true;
+#endif
+#ifdef _WIN64
+windows = true;
+#endif
+
 #include "Shell.h"
 #include <vector>
 #include <algorithm>
+#include <fstream>
+#include <sys/stat.h>
 
-Shell::Shell(bool windows) : running(false), windows(windows), prompt("> ") {}
+Shell::Shell() : running(false), windows(win), prompt("> ") {
+    dictionary = new Woordenboek;
+}
 
 void Shell::launch() {
     running = true;
@@ -41,6 +53,7 @@ void Shell::run_line(std::string &cmd) {
         if (i == ' ') {
             if (!commandFound) {
                 command = curWord;
+                curWord.clear();
                 commandFound = true;
             } else {
                 args.push_back(curWord);
@@ -58,6 +71,7 @@ void Shell::run_line(std::string &cmd) {
         else if (command == "help" || command == "h") run_help();
         else if (command == "save") run_save(args);
         else if (command == "load") run_load(args);
+        else if (command == "add") run_add(args);
         else {
             throw std::invalid_argument("\"" + command + "\" is an unknown command.\nUse \"help\" or \"h\" to get a list of all accepted commands.");
         }
@@ -73,7 +87,10 @@ void Shell::run_exit() {
     std::transform(answer.begin(), answer.end(), answer.begin(),
                    [](unsigned char c){ return std::tolower(c); });
 checkAnswer:
-    if (answer == "y" || answer == "yes") running = false;
+    if (answer == "y" || answer == "yes") {
+        delete dictionary;
+        running = false;
+    }
     else if (answer != "n" && answer != "no") {
         std::cout << "Are you sure you want to leave the dictionary shell? [y/n] ";
         std::getline(std::cin, answer);
@@ -87,18 +104,54 @@ void Shell::run_help() {
     std::cout << "Commands:" << std::endl
     << R"("exit": )" << "\t\t\t\t\t\t\t" << "quit the interactive dictionary" << std::endl
     << R"("help" or "h": )" << "\t\t\t\t\t\t" << "display this screen" << std::endl
-    << R"("save [DIR]": )" << "\t\t\t\t\t\t" << "save the current dictionary in the given (optional) directory." << std::endl
+    << R"("save": )" << "\t\t\t\t\t\t" << "save the current dictionary" << std::endl
     << R"("load [FILE]": )" << "\t\t\t\t\t\t" << "load a dictionary from the given file" << std::endl;
 }
 
 void Shell::run_save(std::vector<std::string> &args) {
-    std::string dir;
-    if (args.empty()) dir = "";
-    else dir = args[0] + "/";
+    if (!args.empty()) throw std::invalid_argument("\"save\" should not be given an argument.\nUse \"help\" or \"h\" to get a list of all accepted commands.");
 
-    std::string fileName = dir + "dictionary.json";
+    std::string fileName = "dictionary.json";
+
+    std::ofstream stream(fileName);
+    dictionary->save(stream);
+    stream.close();
+
+    std::cout << R"(The dictionary was saved as ")" + fileName + R"(".)" << std::endl;
 }
 
 void Shell::run_load(std::vector<std::string> &args) {
-    if (args.empty()) throw std::invalid_argument("\"load\" should given a file name as an argument.\nUse \"help\" or \"h\" to get a list of all accepted commands.");
+    if (args.size() != 1) throw std::invalid_argument("\"load\" should be given a file name as an argument.\nUse \"help\" or \"h\" to get a list of all accepted commands.");
+    if (!FileExists(args[0])) throw std::invalid_argument("File \"" + args[0] + "\" does not exist.");
+
+    delete dictionary;
+    dictionary = new Woordenboek(args[0]);
+}
+
+void Shell::run_add(std::vector<std::string> &args) {
+    if (args.size() != 1) throw std::invalid_argument("\"add\" should be given a word as an argument.\nUse \"help\" or \"h\" to get a list of all accepted commands.");
+    if (!containsOnlyLetters(args[0])) throw std::invalid_argument("Word \"" + args[0] + "\" is not valid.\nThe word can only contain letters.");
+    std::string word = args[0];
+    std::transform(word.begin(), word.end(), word.begin(),
+                   [](unsigned char c){ return std::tolower(c); });
+
+    dictionary->addWoord(word);
+}
+
+bool FileExists(const std::string &filename) {
+    struct stat st;
+    if (stat(filename.c_str(), &st) != 0) return false;
+    std::ifstream f(filename.c_str());
+    if (f.good()) {
+        f.close();
+        return true;
+    } else {
+        f.close();
+        return false;
+    }
+}
+
+bool containsOnlyLetters(std::string const &str) {
+    return str.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ") ==
+           std::string::npos;
 }
