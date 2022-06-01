@@ -3,8 +3,8 @@
 #include "Woordenboek.h"
 
 int main() {
-    //Shell cli;
-    //cli.launch();
+    Shell cli;
+    cli.launch();
 
     Woordenboek w = Woordenboek("../abc.txt");
     Woordenboek w1 = Woordenboek("../Woordenlijst.txt");
