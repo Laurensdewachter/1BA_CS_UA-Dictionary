@@ -28,6 +28,11 @@ Woordenboek::Woordenboek(const string &listName) {
     }
 }
 
+void Woordenboek::operator=(Woordenboek &newDict) {
+    woorden == newDict.woorden;
+    boek = newDict.boek;
+}
+
 Woordenboek::~Woordenboek() {}
 
 void Woordenboek::addWoord(const string woord) {
@@ -57,7 +62,7 @@ void Woordenboek::controleer(const std::string &fileName) {
 
 }
 
-Woordenboek Woordenboek::getWoordenboekVanLengte(unsigned int woordLengte) {
+void Woordenboek::getWoordenboekVanLengte(unsigned int woordLengte) {
     Woordenboek woordenboekLengte = Woordenboek();
     for (const auto &woord: woorden) {
         if (woord.size() == woordLengte)
@@ -94,7 +99,7 @@ Woordenboek Woordenboek::getWoordenboekVanLengte(unsigned int woordLengte) {
     newBoek.removeUnreachable();
     woordenboekLengte.boek = newBoek;
     woordenboekLengte.minimaliseer();
-    return woordenboekLengte;
+    *this = woordenboekLengte;
 }
 
 void Woordenboek::save(std::ostream &onstream) {

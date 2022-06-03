@@ -1,7 +1,3 @@
-//
-// Created by robbe on 01.06.22.
-//
-
 #ifndef DICTIONARY_WORDLE_H
 #define DICTIONARY_WORDLE_H
 #include <vector>
@@ -37,7 +33,7 @@ public:
  * \Pre: De wordle is correct aangemaakt
  * \Post: het spel wordt geupdate en uitgeprint.
  */
-    void guesseWord(std::string guess);
+    void guessWord(std::string guess);
 
 /**
  * \Pre: De wordle is correct aangemaakt
@@ -47,4 +43,4 @@ public:
 };
 
 
-#endif //DICTIONARY_WORDLE_H
+#endif

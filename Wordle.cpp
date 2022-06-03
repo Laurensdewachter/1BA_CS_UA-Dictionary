@@ -1,7 +1,3 @@
-//
-// Created by robbe on 01.06.22.
-//
-
 #include "Wordle.h"
 #include <iostream>
 #include <iomanip>
@@ -52,7 +48,7 @@ void Wordle::print() {
     std::cout << "\033[1;38m" << std::endl;
 }
 
-void Wordle::guesseWord(std::string guess) {
+void Wordle::guessWord(std::string guess) {
     if (isAccepted(guess)) {
         guesses.emplace_back(guess);
         colors.emplace_back(std::vector<std::string>(wordLength, "\033[1;37m"));

@@ -27,6 +27,8 @@ public:
      */
     explicit Woordenboek(const string &listName);
 
+    void operator=(Woordenboek &newDict);
+
     ~Woordenboek();
 //=============Constructors/Destructor=====================
 
@@ -58,7 +60,7 @@ public:
      * \Pre: woordLengte i niet 0
      * \return: een woordenboek met woorden van lengte n
      */
-    Woordenboek getWoordenboekVanLengte(unsigned int woordLengte);
+    void getWoordenboekVanLengte(unsigned int woordLengte);
 
     /**
      * \Pre: Er bestaat een niet lege woordenboeken

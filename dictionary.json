@@ -1,8 +1,9 @@
 {
     "alphabet": [
-        "t",
-        "e",
-        "s"
+        "",
+        "w",
+        "wo",
+        "wor"
     ],
     "states": [
         {
@@ -10,38 +11,38 @@
             "starting": true
         },
         {
-            "name": "t",
+            "name": "w",
             "starting": false
         },
         {
-            "name": "te",
+            "name": "wo",
             "starting": false
         },
         {
-            "name": "tes",
+            "name": "wor",
             "starting": false
         }
     ],
     "transitions": [
         {
             "from": "",
-            "input": "t",
-            "to": "t"
+            "input": "",
+            "to": "w"
         },
         {
-            "from": "t",
-            "input": "e",
-            "to": "te"
+            "from": "w",
+            "input": "w",
+            "to": "wo"
         },
         {
-            "from": "te",
-            "input": "s",
-            "to": "tes"
+            "from": "wo",
+            "input": "wo",
+            "to": "wor"
         },
         {
-            "from": "tes",
-            "input": "t",
-            "to": "test"
+            "from": "wor",
+            "input": "wor",
+            "to": "word"
         }
     ],
     "type": ""
