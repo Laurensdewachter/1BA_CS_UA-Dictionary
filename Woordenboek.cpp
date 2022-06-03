@@ -5,6 +5,15 @@ Woordenboek::Woordenboek(){}
 Woordenboek::Woordenboek(const vector<string> &woorden, const NFA &boek) : woorden(woorden), boek(boek) {}
 
 Woordenboek::Woordenboek(const string &listName) {
+    if(listName.size()>5){
+        string splitsing=".";
+        string extension=listName.substr(listName.find(splitsing),listName.size());
+        if(extension=="json"){
+            boek= NFA(listName);
+            woorden=boek.getFinalStates();
+            return;
+        }
+    }
     boek.setStartingState("Start");
     boek.setCurrentState("Start");
     ifstream file(listName);
@@ -27,13 +36,12 @@ void Woordenboek::addWoord(const string woord) {
     bool final = false;
     for(char letter:woord){
         totalString.push_back(letter);
-        currString.push_back(letter);
         if (totalString == woord) {
             final = true;
         }
         boek.addState(boek.getCurrentState(), totalString, currString, final);
         boek.setCurrentState(totalString);
-        currString="";
+        currString.push_back(letter);
     }
 }
 

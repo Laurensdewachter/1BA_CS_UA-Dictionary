@@ -370,7 +370,6 @@ void NFA::makeBranchStoch(string letters, vector<string> woorden, int number) {
             makeBranchStoch(str, newWords, number+1);
         }
     }
-
 }
 
 string NFA::getSuggestion(string letters, bool b) {
