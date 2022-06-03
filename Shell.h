@@ -9,7 +9,6 @@
 
 class Shell {
     bool running;
-    bool windows;
     std::string prompt;
     Woordenboek* dictionary;
 
@@ -40,6 +39,10 @@ private:
     void run_save(std::vector<std::string> &args);
     void run_load(std::vector<std::string> &args);
     void run_add(std::vector<std::string> &args);
+    void run_remove(std::vector<std::string> &args);
+    void run_minimize(std::vector<std::string> &args);
+    void run_check_text(std::vector<std::string> &args);
+    void run_combine(std::vector<std::string> &args);
 };
 
 bool FileExists(const std::string &filename);

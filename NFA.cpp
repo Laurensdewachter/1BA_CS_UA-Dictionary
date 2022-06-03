@@ -51,7 +51,7 @@ bool NFA::accepts(string String) {
     }
 }
 
-void NFA::print(std::ofstream &onstream) {
+void NFA::print(std::ostream &onstream) {
     vector<map<string,nlohmann::json>> states;
     for (auto i:transitions){
         nlohmann::json state;

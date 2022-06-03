@@ -1,24 +1,17 @@
-bool win = false;
-#ifdef _WIN32
-windows = true;
-#endif
-#ifdef _WIN64
-windows = true;
-#endif
-
 #include "Shell.h"
 #include <vector>
 #include <algorithm>
 #include <fstream>
 #include <sys/stat.h>
 
-Shell::Shell() : running(false), windows(win), prompt("> ") {
+Shell::Shell() : running(false), prompt("> ") {
     dictionary = new Woordenboek;
 }
 
 void Shell::launch() {
     running = true;
-    std::cout << "Welcome to the interactive dictionary.\nUse \"help\" or \"h\" to get a list of all accepted commands." << std::endl;
+    std::cout << "Welcome to the interactive dictionary." << std::endl
+    << R"(Use "help" or "h" to get a list of all accepted commands.)" << std::endl;
     while (running) {
         std::cout << prompt;
         std::string line;
@@ -72,6 +65,8 @@ void Shell::run_line(std::string &cmd) {
         else if (command == "save") run_save(args);
         else if (command == "load") run_load(args);
         else if (command == "add") run_add(args);
+        else if (command == "remove") run_remove(args);
+        else if (command == "minimize") run_minimize(args);
         else {
             throw std::invalid_argument("\"" + command + "\" is an unknown command.\nUse \"help\" or \"h\" to get a list of all accepted commands.");
         }
@@ -104,8 +99,11 @@ void Shell::run_help() {
     std::cout << "Commands:" << std::endl
     << R"("exit": )" << "\t\t\t\t\t\t\t" << "quit the interactive dictionary" << std::endl
     << R"("help" or "h": )" << "\t\t\t\t\t\t" << "display this screen" << std::endl
-    << R"("save": )" << "\t\t\t\t\t\t" << "save the current dictionary" << std::endl
-    << R"("load [FILE]": )" << "\t\t\t\t\t\t" << "load a dictionary from the given file" << std::endl;
+    << R"("save": )" << "\t\t\t\t\t\t\t" << "save the current dictionary" << std::endl
+    << R"("load [FILE]": )" << "\t\t\t\t\t\t" << "load a dictionary from the given file" << std::endl
+    << R"("add [WORD]":)" << "\t\t\t\t\t\t" << "add a word to the dictionary" << std::endl
+    << R"("remove [WORD]":)" << "\t\t\t\t\t" << "remove a word from the dictionary" << std::endl
+    << R"("minimize":)" << "\t\t\t\t\t\t\t" << "minimize the current dictionary" << std::endl;
 }
 
 void Shell::run_save(std::vector<std::string> &args) {
@@ -113,7 +111,8 @@ void Shell::run_save(std::vector<std::string> &args) {
 
     std::string fileName = "dictionary.json";
 
-    std::ofstream stream(fileName);
+    std::ofstream stream;
+    stream.open(fileName);
     dictionary->save(stream);
     stream.close();
 
@@ -132,10 +131,44 @@ void Shell::run_add(std::vector<std::string> &args) {
     if (args.size() != 1) throw std::invalid_argument("\"add\" should be given a word as an argument.\nUse \"help\" or \"h\" to get a list of all accepted commands.");
     if (!containsOnlyLetters(args[0])) throw std::invalid_argument("Word \"" + args[0] + "\" is not valid.\nThe word can only contain letters.");
     std::string word = args[0];
-    std::transform(word.begin(), word.end(), word.begin(),
-                   [](unsigned char c){ return std::tolower(c); });
+    std::transform(word.begin(), word.end(), word.begin(), [](unsigned char c){ return std::tolower(c);});
 
     dictionary->addWoord(word);
+}
+
+void Shell::run_remove(std::vector<std::string> &args) {
+    if (args.size() != 1) throw std::invalid_argument("\"remove\" should be given a word as an argument.\nUse \"help\" or \"h\" to get a list of all accepted commands.");
+    if (args.size() != 1) throw std::invalid_argument("\"remove\" should be given a word as an argument.\nUse \"help\" or \"h\" to get a list of all accepted commands.");
+    if (!containsOnlyLetters(args[0])) throw std::invalid_argument("Word \"" + args[0] + "\" is not valid.\nThe word can only contain letters.");
+    std::string word = args[0];
+    std::transform(word.begin(), word.end(), word.begin(), [](unsigned char c){ return std::tolower(c);});
+
+    dictionary->removeWoord(word);
+}
+
+void Shell::run_minimize(std::vector<std::string> &args) {
+    if (!args.empty()) throw std::invalid_argument("\"minimize\" should not be given an argument.\nUse \"help\" or \"h\" to get a list of all accepted commands.");
+
+    dictionary->minimaliseer();
+}
+
+void Shell::run_check_text(std::vector<std::string> &args) {
+
+}
+
+void Shell::run_combine(std::vector<std::string> &args) {
+    if (args.size() != 2) throw std::invalid_argument("\"combine\" should be given two files as an argument.\nUse \"help\" or \"h\" to get a list of all accepted commands.");
+    std::string fileName1 = args[0];
+    std::string fileName2 = args[1];
+    if (!FileExists(fileName1)) {
+        throw std::invalid_argument("\"" + fileName1 + "\" does not exist. Please give a valid file");
+    }
+    if (!FileExists(fileName2)) {
+        throw std::invalid_argument("\"" + fileName2 + "\" does not exist. Please give a valid file");
+    }
+
+    delete dictionary;
+    //TODO: add constructor function
 }
 
 bool FileExists(const std::string &filename) {

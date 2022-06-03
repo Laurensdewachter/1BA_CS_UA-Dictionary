@@ -37,44 +37,16 @@ void Woordenboek::addWoord(const string woord) {
     }
 }
 
-void Woordenboek::save(std::ofstream &onstream) {
-    boek.print(onstream);
+void Woordenboek::removeWoord(const std::string &woord) {
+    
 }
 
 void Woordenboek::minimaliseer() {
 
 }
 
-Woordenboek Woordenboek::combineer(Woordenboek dict1, Woordenboek dict2) {
-    NFA product(dict1.boek, dict2.boek, false);
-    dict1.pushWords(dict2.woorden);
-    return Woordenboek(dict1.woorden, product);
-}
+void Woordenboek::controleer(const std::string &fileName) {
 
-string Woordenboek::giveSuggestion(string letters) {
-    boek.makeStochastic(woorden);
-    string str = boek.getSuggestion(letters);
-    return str;
-}
-
-void Woordenboek::pushWords(vector<string> words) {
-    for (auto i:words){
-        auto result = std::find(woorden.begin(), woorden.end(), i);
-        if(result == woorden.end()) {
-            woorden.push_back(i);
-        }
-    }
-}
-
-Woordenboek Woordenboek::gemeenschappelijk(Woordenboek dict1, Woordenboek dict2) {
-    vector<string> woorden;
-    NFA product(dict1.boek, dict2.boek, true);
-    for(auto i:dict1.woorden){
-        if(find(dict2.woorden.begin(), dict2.woorden.end(), i) != dict2.woorden.end()){
-            woorden.push_back(i);
-        }
-    }
-    return Woordenboek(woorden, product);
 }
 
 Woordenboek Woordenboek::getWoordenboekVanLengte(unsigned int woordLengte) {
@@ -115,6 +87,42 @@ Woordenboek Woordenboek::getWoordenboekVanLengte(unsigned int woordLengte) {
     woordenboekLengte.boek = newBoek;
     woordenboekLengte.minimaliseer();
     return woordenboekLengte;
+}
+
+void Woordenboek::save(std::ostream &onstream) {
+    boek.print(onstream);
+}
+
+Woordenboek Woordenboek::combineer(Woordenboek dict1, Woordenboek dict2) {
+    NFA product(dict1.boek, dict2.boek, false);
+    dict1.pushWords(dict2.woorden);
+    return Woordenboek(dict1.woorden, product);
+}
+
+string Woordenboek::giveSuggestion(string letters) {
+    boek.makeStochastic(woorden);
+    string str = boek.getSuggestion(letters);
+    return str;
+}
+
+void Woordenboek::pushWords(vector<string> words) {
+    for (auto i:words){
+        auto result = std::find(woorden.begin(), woorden.end(), i);
+        if(result == woorden.end()) {
+            woorden.push_back(i);
+        }
+    }
+}
+
+Woordenboek Woordenboek::gemeenschappelijk(Woordenboek dict1, Woordenboek dict2) {
+    vector<string> woorden;
+    NFA product(dict1.boek, dict2.boek, true);
+    for(auto i:dict1.woorden){
+        if(find(dict2.woorden.begin(), dict2.woorden.end(), i) != dict2.woorden.end()){
+            woorden.push_back(i);
+        }
+    }
+    return Woordenboek(woorden, product);
 }
 
 void Woordenboek::checkText(const char *inputFile, const char *outputFile) { //Alle leestekens worden nu nog naar spatie's omgezet
