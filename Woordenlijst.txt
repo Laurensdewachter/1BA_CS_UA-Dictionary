@@ -1,8 +1,8 @@
 appel
 banaan
-Citroen
-Peer
+citroen
+peer
 aula
 bank
-Citeren
-Pen
+citeren
+pen

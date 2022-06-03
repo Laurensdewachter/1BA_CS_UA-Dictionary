@@ -3,12 +3,6 @@
 //
 
 #include "DFA.h"
-
-//
-// Created by sisoo on 16/02/2022.
-//
-
-#include "DFA.h"
 #include <iostream>
 
 DFA::DFA() {}

@@ -12,6 +12,7 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <algorithm>
 #include "json.hpp"
 #include <map>
 #include "DFA.h"
@@ -34,7 +35,7 @@ public:
     NFA(string filename);
     NFA(NFA nfa1, NFA nfa2, bool b);
     bool accepts(string String);
-    void print();
+    void print(std::ofstream &onstream);
     string bool_as_text(bool b);
     DFA toDFA();
 
@@ -62,7 +63,7 @@ public:
 
     void setCurrentState(const string &currentState);
 
-    vector<string> pushalf(vector<string> alf);
+    void pushalf(vector<string> alf);
 
     void makeStochastic(vector<string> &woorden);
 
@@ -72,6 +73,9 @@ public:
 
     string getSuggestion(string letters, bool b = true);
 
+    void pushFinal(vector<string> final);
+
+    void removeUnreachable();
 };
 
 
