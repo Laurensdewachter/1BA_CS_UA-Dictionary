@@ -15,6 +15,7 @@ Wordle::Wordle(Woordenboek* book, unsigned int numguesses) {
     guesses = {};
     colors = {};
     print();
+    finished = false;
     std::cout<<std::endl <<std::endl;
 }
 
@@ -74,6 +75,7 @@ void Wordle::guessWord(std::string guess) {
     }
     if (guess == word) {
         std::cout << "Victory!!!";
+        finished = true;
         clear();
     }
 

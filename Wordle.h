@@ -16,6 +16,7 @@ private:
     unsigned int wordLength;
     std::vector<std::vector<std::string>> colors;
     Woordenboek* w;
+    bool finished;
 public:
 /**
  * \Pre: er is een bestaand woordenboek met enkel woorden van lengte n;
@@ -40,6 +41,8 @@ public:
  * \Post: De vooruitgang wordt verwijdert, er wordt een nieuw woord gekozen en het spel wordt uigeprint
  */
     void clear();
+
+    bool hasFinished() const {return finished;}
 };
 
 
