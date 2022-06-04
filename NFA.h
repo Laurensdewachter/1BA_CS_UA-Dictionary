@@ -76,10 +76,6 @@ public:
     void pushFinal(vector<string> final);
 
     void removeUnreachable();
-
-    vector<string> pushalf(vector<string> alf);
-
-    void addState(string from, string to, string transition, bool final);
 };
 
 

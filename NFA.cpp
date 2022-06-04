@@ -403,21 +403,6 @@ string NFA::getSuggestion(string letters, bool b) {
         return getSuggestion(letters+trans, false);
     }
 }
-void NFA::addState(string from, string to, string transition, bool final) {
-    if(find(alphabet.begin(),alphabet.end(),transition)==alphabet.end()){
-        alphabet.push_back(transition);
-    }
-    if(final){
-        FinalStates.push_back(to);
-    }
-    if(transitions.find(from)!=transitions.end()){
-        transitions.find(from)->second.push_back({transition,to});
-    }
-    else{
-        transitions[from]={{transition,to}};
-    }
-}
-
 
 void NFA::pushFinal(vector<string> final) {
     for (auto i:final){
