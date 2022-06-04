@@ -13,6 +13,7 @@ private:
     vector<string> woorden;
     NFA boek;
 public:
+//=============Constructors/Destructor=====================
     /**
      * \Post: leeg woordenboek aangemaakt
      */
@@ -26,22 +27,22 @@ public:
      */
     explicit Woordenboek(const string &listName);
 
+    void operator=(Woordenboek &newDict);
+
     ~Woordenboek();
+//=============Constructors/Destructor=====================
 
     /**
-     * \Pre: Er bestaat een woordenboek
-     * \Post: Het woord is toegevoegd aan het woordenboek
+     * \Pre Er bestaat een woordenboek
+     * \Post Het woord is toegevoegd aan het woordenboek
      */
     void addWoord(const string woord);
 
     /**
-     * \brief slaag het woordenboek op
-     * \author Laurens De Wachter
-     * @param onstream de stream waarop het woordenboek geschreven zal worden
+     * \brief Verwijder een woord
+     * 
      */
-    void save(std::ofstream &onstream);
-
-    void pushWords(vector<string> words);
+    void removeWoord(const std::string &woord);
 
     /**
      * \Pre: Er bestaat een niet leeg woordenboek
@@ -50,17 +51,23 @@ public:
     void minimaliseer();
 
     /**
-     * \pre: Er bestaan twee niet lege woordenboeken
-     * \Post: Er bestaat een nieuwe NFA (woordenboek) die de combinatie is van de twee gegeven woordenboeken
+     * \brief Controleer een tekst in een tekstbestand
+     * \param fileName De file waar de tekst die gecontroleerd moet worden zich bevindt
      */
-    static Woordenboek combineer(Woordenboek dict1, Woordenboek dict2);
+    void controleer(const std::string &fileName);
+
+    /**
+     * \Pre: woordLengte i niet 0
+     * \return: een woordenboek met woorden van lengte n
+     */
+    void getWoordenboekVanLengte(unsigned int woordLengte);
 
     /**
      * \Pre: Er bestaat een niet lege woordenboeken
      *
      * \return: Het woord dat het meest waarschijnlijke is om getypt te worden.
      */
-    string giveSuggestion(string letters);
+    string giveSuggestion(const std::string &letters);
 
     /**
      * \Pre: Er bestaan twee niet lege woordenboeken
@@ -70,13 +77,21 @@ public:
     static Woordenboek gemeenschappelijk(Woordenboek dict1, Woordenboek dict2);
 
     /**
-     * \Pre: woordLengte i niet 0
-     *
-     * \return: een woordenboek met woorden van lengte n
+     * \brief slaag het woordenboek op
+     * @param onstream de stream waarop het woordenboek geschreven zal worden
      */
-    Woordenboek getWoordenboekVanLengte(unsigned int woordLengte);
+    void save(std::ostream &onstream);
+
+    /**
+     * \pre: Er bestaan twee niet lege woordenboeken
+     * \Post: Er bestaat een nieuwe NFA (woordenboek) die de combinatie is van de twee gegeven woordenboeken
+     */
+    static Woordenboek combineer(Woordenboek dict1, Woordenboek dict2);
 
     void checkText(const char *inputFile, const char *outputFile);
+
+private:
+    void pushWords(vector<string> words);
 };
 
 

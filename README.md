@@ -2,16 +2,16 @@
 
 | Feature                   | Naam    | status |
 |---------------------------|---------|--------|
-| Woordenboek aanmaken      | Dante   |        |
-| Woorden toevoegen         | Dante   |        |
+| Woordenboek aanmaken      | Dante   | X      |
+| Woorden toevoegen         | Dante   | X      |
 | Woorden verwijderen       | Robbe   |        |
 | Woordenboek minimaliseren | Dante   |        |
 | Tekst controleren         | Stan    |        |
 | Talen combineren          | Simon   |        |
-| Opslaan                   | Laurens |        |
-| Laden                     | Laurens |        |
 | Strings van lengte n      | Stan    |        |
+| Woordsuggesties           | Simon   |        |
 | Wordle                    | Robbe   |        |
 | CLI                       | Laurens |        |
-| Woordsuggesties           | Simon   |        |
+| Opslaan                   | Laurens | X      |
+| Laden                     | Laurens | X      |
 

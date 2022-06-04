@@ -35,7 +35,7 @@ public:
     NFA(string filename);
     NFA(NFA nfa1, NFA nfa2, bool b);
     bool accepts(string String);
-    void print(std::ofstream &onstream);
+    void print(std::ostream &onstream);
     string bool_as_text(bool b);
     DFA toDFA();
 
