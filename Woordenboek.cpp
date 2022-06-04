@@ -149,21 +149,19 @@ void Woordenboek::checkText(const char *inputFile, const char *outputFile) { //A
         return;
     }
     string line;
-    char *token;
+    regex wordSearch = regex("\\w+");
+    smatch wordMatch;
     while (getline(inFile, line)) {
-        char *cline = &line[0];
-        token = strtok(cline, " ,.!?");
-        while (token != NULL) {
-            if (not boek.accepts(token)) {
-                outFile << "<b style=\"color:red\">" << token << "</b>";
-            } else {
-                outFile << token;
+        string restLine = line;
+        while (regex_search(restLine, wordMatch, wordSearch)) {
+            string word = wordMatch.str();
+            if (not boek.accepts(word)) {
+                regex wordRegex = regex('('+word+')');
+                line = regex_replace(line, wordRegex, "<b style=\"color:red\"> $1 </b>");
             }
-            token = strtok(NULL, " ,.!?");
-            if (token != NULL)
-                outFile << ' ';
+            restLine = wordMatch.suffix();
         }
-        outFile << '\n';
+        outFile << line << '\n';
     }
     inFile.close();
     outFile.close();
