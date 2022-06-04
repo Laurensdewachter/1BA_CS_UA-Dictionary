@@ -112,7 +112,7 @@ Woordenboek Woordenboek::combineer(Woordenboek dict1, Woordenboek dict2) {
     return Woordenboek(dict1.woorden, product);
 }
 
-string Woordenboek::giveSuggestion(string letters) {
+string Woordenboek::giveSuggestion(const std::string &letters) {
     boek.makeStochastic(woorden);
     string str = boek.getSuggestion(letters);
     return str;

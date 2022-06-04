@@ -67,7 +67,7 @@ public:
      *
      * \return: Het woord dat het meest waarschijnlijke is om getypt te worden.
      */
-    string giveSuggestion(string letters);
+    string giveSuggestion(const std::string &letters);
 
     /**
      * \Pre: Er bestaan twee niet lege woordenboeken
