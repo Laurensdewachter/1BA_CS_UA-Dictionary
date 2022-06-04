@@ -1,8 +1,5 @@
 appel
-banaan
-citroen
-peer
-aula
-bank
-citeren
-pen
+beker
+lepel
+plant
+prijs

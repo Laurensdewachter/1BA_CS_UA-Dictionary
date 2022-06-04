@@ -2,16 +2,13 @@
 #include <iostream>
 #include <iomanip>
 
-bool isAccepted(std::string word){
-    return word.length() == 15;
-}
-
-
-Wordle::Wordle(Woordenboek* book, unsigned int numguesses) {
+Wordle::Wordle(Woordenboek* book, unsigned int length, unsigned int numguesses) {
     numGuesses = numguesses;
+    //w = book->getWoordenboekVanLengte(length);
     w = book;
     word = w->giveSuggestion("");
-    wordLength = word.length();
+    while (word.length() != length) word = w->giveSuggestion("");
+    wordLength = length;
     guesses = {};
     colors = {};
     print();
@@ -49,7 +46,7 @@ void Wordle::print() {
 }
 
 void Wordle::guessWord(std::string guess) {
-    if (isAccepted(guess)) {
+    if (w->accepts(guess)) {
         guesses.emplace_back(guess);
         colors.emplace_back(std::vector<std::string>(wordLength, "\033[1;37m"));
         std::string copy = word;
@@ -74,6 +71,7 @@ void Wordle::guessWord(std::string guess) {
     }
     if (guess == word) {
         std::cout << "Victory!!!";
+        finished = true;
         clear();
     }
 

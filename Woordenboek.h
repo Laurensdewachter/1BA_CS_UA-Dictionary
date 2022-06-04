@@ -90,6 +90,8 @@ public:
 
     void checkText(const char *inputFile, const char *outputFile);
 
+    bool accepts(const std::string &word);
+
 private:
     void pushWords(vector<string> words);
 };

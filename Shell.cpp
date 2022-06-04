@@ -171,8 +171,11 @@ void Shell::run_length(std::vector<std::string> &args) {
 }
 
 void Shell::run_suggest(std::vector<std::string> &args) {
-    if (args.size() != 1) throw std::invalid_argument("\"suggest\" should be given a word as an argument.\nUse \"help\" or \"h\" to get a list of all accepted commands");
-    if (!containsOnlyLetters(args[0])) throw std::invalid_argument("Word \"" + args[0] + "\" is not valid.\nThe word can only contain letters");
+    if (args.empty()) {
+        args.emplace_back("");
+    } else {
+        if (!containsOnlyLetters(args[0])) throw std::invalid_argument("Word \"" + args[0] + "\" is not valid.\nThe word can only contain letters");
+    }
 
     std::string suggestion = dictionary->giveSuggestion(args[0]);
 
@@ -183,7 +186,18 @@ void Shell::run_wordle(std::vector<std::string> &args) {
     if (!args.empty()) throw std::invalid_argument("\"wordle\" should not be given an argument.\nUse \"help\" or \"h\" to get a list of all accepted commands");
 
     Wordle wordle(dictionary, 6);
-    wordle.print();
+    prompt = "guess > ";
+    while(!wordle.hasFinished()) {
+        std::cout << prompt;
+        std::string line;
+        std::getline(std::cin, line);
+        std::transform(line.begin(), line.end(), line.begin(), [](unsigned char c){ return std::tolower(c);});
+        if (line == "exit wordle") break;
+        if (!containsOnlyLetters(line)) continue;
+
+        wordle.guessWord(line);
+    }
+    prompt = "> ";
 }
 
 void Shell::run_save(std::vector<std::string> &args) {

@@ -301,7 +301,7 @@ void NFA::pushalf(vector<string> alf) {
 void NFA::makeStochastic(vector<string>& woorden) {
     stochasticTransitions = transitions;
     for(auto i:transitions[StartingState]){
-        string str = i[0];
+        string str = i[1];
         int teller = 0;
         vector<string> newWords;
         for(auto j:woorden){
@@ -351,7 +351,7 @@ void NFA::makeBranchStoch(string letters, vector<string> woorden, int number) {
     for(auto i:transitions[letters]){
         vector<string> newWords = {};
         int teller = 0;
-        string str = letters+i[0];
+        string str = letters+i[1].substr(i[1].size()-1, 1);
         for(auto j:woorden){
             string substr = j.substr(0,number);
             if(substr == str){

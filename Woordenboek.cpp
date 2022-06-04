@@ -1,6 +1,9 @@
 #include "Woordenboek.h"
 
-Woordenboek::Woordenboek(){}
+Woordenboek::Woordenboek(){
+    boek.setStartingState("Start");
+    boek.setCurrentState("Start");
+}
 
 Woordenboek::Woordenboek(const vector<string> &woorden, const NFA &boek) : woorden(woorden), boek(boek) {}
 
@@ -44,10 +47,11 @@ void Woordenboek::addWoord(const string woord) {
         if (totalString == woord) {
             final = true;
         }
+        currString = letter;
         boek.addState(boek.getCurrentState(), totalString, currString, final);
         boek.setCurrentState(totalString);
-        currString.push_back(letter);
     }
+    woorden.push_back(woord);
 }
 
 void Woordenboek::removeWoord(const std::string &woord) {
@@ -163,4 +167,8 @@ void Woordenboek::checkText(const char *inputFile, const char *outputFile) { //A
     }
     inFile.close();
     outFile.close();
+}
+
+bool Woordenboek::accepts(const std::string &word) {
+    return boek.accepts(word);
 }
