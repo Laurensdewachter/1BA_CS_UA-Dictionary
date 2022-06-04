@@ -5,9 +5,6 @@
 #include "Woordenboek.h"
 
 
-bool isAccepted(std::string word);
-
-
 class Wordle {
 private:
     std::vector<std::string> guesses;
@@ -22,7 +19,7 @@ public:
  * \Pre: er is een bestaand woordenboek met enkel woorden van lengte n;
  * \Post: er is een Wordle aangemaakt en uitgeprint, klaar om te spelen!!!
  */
-    Wordle(Woordenboek* w, unsigned int numGuesses = 6);
+    Wordle(Woordenboek* w, unsigned int lengt = 5, unsigned int numGuesses = 6);
 
 /**
  * \Pre: De wordle is correct aangemaakt

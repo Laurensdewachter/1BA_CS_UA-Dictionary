@@ -1,6 +1,4 @@
-#include <iostream>
 #include "Shell.h"
-#include "Woordenboek.h"
 
 int main() {
     Shell cli;

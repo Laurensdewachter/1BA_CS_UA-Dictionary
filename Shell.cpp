@@ -171,8 +171,11 @@ void Shell::run_length(std::vector<std::string> &args) {
 }
 
 void Shell::run_suggest(std::vector<std::string> &args) {
-    if (args.size() != 1) throw std::invalid_argument("\"suggest\" should be given a word as an argument.\nUse \"help\" or \"h\" to get a list of all accepted commands");
-    if (!containsOnlyLetters(args[0])) throw std::invalid_argument("Word \"" + args[0] + "\" is not valid.\nThe word can only contain letters");
+    if (args.empty()) {
+        args.emplace_back("");
+    } else {
+        if (!containsOnlyLetters(args[0])) throw std::invalid_argument("Word \"" + args[0] + "\" is not valid.\nThe word can only contain letters");
+    }
 
     std::string suggestion = dictionary->giveSuggestion(args[0]);
 
