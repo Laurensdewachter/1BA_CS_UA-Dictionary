@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <regex>
 #include "NFA.h"
 
 using namespace std;
