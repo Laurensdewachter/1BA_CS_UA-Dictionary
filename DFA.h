@@ -68,6 +68,10 @@ public:
     string FSTORE(string FS);
 
     string makeString(string R, string S, string U, string T);
+
+    DFA minimize();
+
+    void addState(string from, string to, string transition, bool final);
 };
 
 
