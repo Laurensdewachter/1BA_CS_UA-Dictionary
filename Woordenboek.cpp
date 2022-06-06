@@ -25,7 +25,6 @@ Woordenboek::Woordenboek(const string &listName) {
         while (std::getline(file, line)) {
             addWoord(line);
             boek.setCurrentState("Start");
-            woorden.push_back(line);
         }
         file.close();
     }
@@ -107,13 +106,14 @@ void Woordenboek::getWoordenboekVanLengte(unsigned int woordLengte) {
 }
 
 void Woordenboek::save(std::ostream &onstream) {
-    boek.print(onstream);
+    for (auto word : woorden) {
+        onstream << word << "\n";
+    }
 }
 
-Woordenboek Woordenboek::combineer(Woordenboek dict1, Woordenboek dict2) {
-    NFA product(dict1.boek, dict2.boek, false);
-    dict1.pushWords(dict2.woorden);
-    return Woordenboek(dict1.woorden, product);
+Woordenboek Woordenboek::combineer(Woordenboek dict2) {
+    NFA product(boek, dict2.boek, false);
+    pushWords(dict2.woorden);
 }
 
 string Woordenboek::giveSuggestion(const std::string &letters) {

@@ -87,7 +87,7 @@ public:
      * \pre: Er bestaan twee niet lege woordenboeken
      * \Post: Er bestaat een nieuwe NFA (woordenboek) die de combinatie is van de twee gegeven woordenboeken
      */
-    static Woordenboek combineer(Woordenboek dict1, Woordenboek dict2);
+    Woordenboek combineer(Woordenboek dict2);
 
     void checkText(const char *inputFile, const char *outputFile);
 
