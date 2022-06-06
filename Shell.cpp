@@ -149,18 +149,15 @@ void Shell::run_check_text(std::vector<std::string> &args) {
 }
 
 void Shell::run_combine(std::vector<std::string> &args) {
-    if (args.size() != 2) throw std::invalid_argument("\"combine\" should be given two files as an argument.\nUse \"help\" or \"h\" to get a list of all accepted commands");
+    if (args.size() != 1) throw std::invalid_argument("\"combine\" should be given a file as an argument.\nUse \"help\" or \"h\" to get a list of all accepted commands");
     std::string fileName1 = args[0];
-    std::string fileName2 = args[1];
     if (!FileExists(fileName1)) {
         throw std::invalid_argument("\"" + fileName1 + "\" does not exist. Please give a valid file");
     }
-    if (!FileExists(fileName2)) {
-        throw std::invalid_argument("\"" + fileName2 + "\" does not exist. Please give a valid file");
-    }
 
-    delete dictionary;
-    //TODO: add constructor function
+    Woordenboek dict2(args[0]);
+
+    dictionary->combineer(dict2);
 }
 
 void Shell::run_length(std::vector<std::string> &args) {
@@ -203,7 +200,7 @@ void Shell::run_wordle(std::vector<std::string> &args) {
 void Shell::run_save(std::vector<std::string> &args) {
     if (!args.empty()) throw std::invalid_argument("\"save\" should not be given an argument.\nUse \"help\" or \"h\" to get a list of all accepted commands");
 
-    std::string fileName = "dictionary.json";
+    std::string fileName = "dictionary.txt";
 
     std::ofstream stream;
     stream.open(fileName);
