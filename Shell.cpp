@@ -105,18 +105,18 @@ checkAnswer:
 
 void Shell::run_help() {
     std::cout << "Commands:" << std::endl
-    << R"("exit":)" << "\t\t\t\t\t\t\t\t" << "quit the interactive dictionary" << std::endl
+    << R"("exit":)" << "\t\t\t\t\t\t\t" << "quit the interactive dictionary" << std::endl
     << R"("help" or "h":)" << "\t\t\t\t\t\t" << "display this screen" << std::endl
     << R"("add [WORD]":)" << "\t\t\t\t\t\t" << "add a word to the dictionary" << std::endl
     << R"("remove [WORD]":)" << "\t\t\t\t\t" << "remove a word from the dictionary" << std::endl
-    << R"("minimize":)" << "\t\t\t\t\t\t\t" << "minimize the current dictionary" << std::endl
+    << R"("minimize":)" << "\t\t\t\t\t\t" << "minimize the current dictionary" << std::endl
     << R"("check [FILE]":)" << "\t\t\t\t\t\t" << "check the text in the file for mistakes" << std::endl
-    << R"("combine [FILE]":)" << "\t\t\t\t" << "combine the current dictionary with the dictionary in the file" << std::endl
+    << R"("combine [FILE]":)" << "\t\t\t\t\t" << "combine the current dictionary with the dictionary in the file" << std::endl
     << R"("length [N]":)" << "\t\t\t\t\t\t" << "remove all words that do not have length N from the dictionary" << std::endl
     << R"("suggest [WORD]":)" << "\t\t\t\t\t" << "suggest a word in the dictionary that is the most similar to WORD" << std::endl
-    << R"("wordle":)" << "\t\t\t\t\t\t\t" << "play a game of Wordle" << std::endl
+    << R"("wordle":)" << "\t\t\t\t\t\t" << "play a game of Wordle" << std::endl
     << R"("equal [FILE]":)" << "\t\t\t\t\t\t" << "compare the current dictionary in the file" << std::endl
-    << R"("save":)" << "\t\t\t\t\t\t\t\t" << "save the current dictionary" << std::endl
+    << R"("save":)" << "\t\t\t\t\t\t\t" << "save the current dictionary" << std::endl
     << R"("load [FILE]":)" << "\t\t\t\t\t\t" << "load a dictionary from the given file" << std::endl;
 }
 

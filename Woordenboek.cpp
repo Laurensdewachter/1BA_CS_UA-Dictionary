@@ -161,15 +161,16 @@ void Woordenboek::pushWords(vector<string> words) {
     }
 }
 
-Woordenboek Woordenboek::gemeenschappelijk(Woordenboek dict1, Woordenboek dict2) {
-    vector<string> woorden;
-    NFA product(dict1.boek, dict2.boek, true);
-    for(auto i:dict1.woorden){
+void Woordenboek::gemeenschappelijk(Woordenboek dict2) {
+    vector<string> newWoorden;
+    NFA product(boek, dict2.boek, true);
+    for(auto i:woorden){
         if(find(dict2.woorden.begin(), dict2.woorden.end(), i) != dict2.woorden.end()){
-            woorden.push_back(i);
+            newWoorden.push_back(i);
         }
     }
-    return Woordenboek(woorden, product);
+    woorden = newWoorden;
+    boek = product;
 }
 
 void Woordenboek::checkText(const char *inputFile, const char *outputFile) { //Alle leestekens worden nu nog naar spatie's omgezet
