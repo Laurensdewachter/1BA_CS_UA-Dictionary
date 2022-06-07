@@ -129,7 +129,7 @@ void Woordenboek::getWoordenboekVanLengte(unsigned int woordLengte) {
     newBoek.removeUnreachable();
     woordenboekLengte.boek = newBoek;
     for (auto woord: woordenWeg) {
-        boek.minimizeUnreachable(woord);
+        removeWoord(woord);
     }
     *this = woordenboekLengte;
 }
