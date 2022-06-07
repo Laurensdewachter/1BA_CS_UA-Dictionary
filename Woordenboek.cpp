@@ -61,8 +61,11 @@ void Woordenboek::minimaliseer() {
 
 }
 
-void Woordenboek::controleer(const std::string &fileName) {
-
+void Woordenboek::controleer(const std::string &inFileName) {
+    size_t startExtension = inFileName.find_last_of('.');
+    string outFileName = inFileName.substr(startExtension);
+    outFileName += "_corrected.html";
+    checkText(inFileName.c_str(), outFileName.c_str());
 }
 
 void Woordenboek::getWoordenboekVanLengte(unsigned int woordLengte) {
