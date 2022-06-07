@@ -657,7 +657,7 @@ string DFA::makeString(string R, string S, string U, string T) {
 DFA DFA::minimize() {
     vector<pair<string,string>> equivalent;
     vector<string> nietEquivalent;
-    vector<string> states={StartingState};
+    vector<string> states;
     vector<string> finals=FinalStates;
     CurrentState=StartingState;
     for(const auto& transition:transitions[CurrentState]){
@@ -665,37 +665,77 @@ DFA DFA::minimize() {
             states.push_back(transition.at(1));
         }
     }
-    for(const auto& state:states){
-        for(const auto& state2:states){
+    for(int i=0; i<states.size()-2; i++){
+        for(int j=i+1;j<states.size()-1; j++){
+            string state = states[i];
+            string state2 = states[j];
+            bool distinguishable = false;
             if(state==state2){
                 continue;
             }
-            else {
-                //Todo: maak hulpfunctie
-                bool distinguishable = false;
-                for (int i = 0; i < alphabet.size(); i++) {
-                    string toFind = transitions[state][i][0];
-                    if (std::find(FinalStates.begin(), FinalStates.end(), transitions[state][i][0]) !=
-                        FinalStates.end()) {
-                        if (std::find(FinalStates.begin(), FinalStates.end(), transitions[state2][i][0]) !=
-                            FinalStates.end()) {
-                            continue;
-                        } else {
-                            distinguishable = true;
-                        }
-                    } else {
-                        if (std::find(FinalStates.begin(), FinalStates.end(), transitions[state2][i][0]) !=
-                            FinalStates.end()) {
-                            distinguishable = true;
-                        }
+            if(std::find(FinalStates.begin(), FinalStates.end(),state)!=FinalStates.end() and
+                    std::find(FinalStates.begin(), FinalStates.end(),state2)!=FinalStates.end()){
+                continue;
+            }
+//            else if(std::find(FinalStates.begin(), FinalStates.end(),state2)!=FinalStates.end() and
+//                    std::find(FinalStates.begin(), FinalStates.end(),state)==FinalStates.end()){
+//                distinguishable=true;
+//            }
+//            else {
+            //Todo: maak hulpfunctie
+            for (auto character:alphabet) {
+                string nextState1, nextState2;
+                for (auto t:transitions[state]) {
+                    if (t[0] == character) {
+                        nextState1 = t[1];
+                        break;
                     }
                 }
-                if (not distinguishable) {
-                    equivalent.push_back({state, state2});
+                for (auto t:transitions[state2]) {
+                    if (t[0] == character) {
+                        nextState2 = t[1];
+                        break;
+                    }
                 }
+                if (nextState1 != nextState2) {
+                    distinguishable = true;
+                    break;
+                }
+//                if (std::find(FinalStates.begin(), FinalStates.end(), transitions[state][i][1]) !=
+//                    FinalStates.end()) {
+//                    if (std::find(FinalStates.begin(), FinalStates.end(), transitions[state2][i][1]) !=
+//                        FinalStates.end()) {
+//                        continue;
+//                    } else {
+//                        distinguishable = true;
+//                    }
+//                } else {
+//                    if (std::find(FinalStates.begin(), FinalStates.end(), transitions[state2][i][1]) !=
+//                        FinalStates.end()) {
+//                        distinguishable = true;
+//                    }
+//                }
             }
+            pair<string,string> paar={state,state2};
+            pair<string,string> paar2={state2,state};
+            if (not distinguishable and std::find(equivalent.begin(), equivalent.end(),paar)==equivalent.end()
+                and std::find(equivalent.begin(), equivalent.end(),paar2)==equivalent.end()) {
+                equivalent.push_back(paar);
+                }
+//            }
         }
     }
+//    for (auto states: equivalent) {
+//        string other;   //DIT WERKT NOG NIET ALS DEAD STATE ER NIET BIJ HOORT
+//        if (states.first == "{}")
+//            other = states.second;
+//        else if (states.second == "{}")
+//            other = states.first;
+//        transitions.erase(other);
+//        for (:) {
+//
+//        }
+//    }
     //Todo: maak hulpfunctie
     vector<vector<string>> comboStates={};
     string nieuwStart;

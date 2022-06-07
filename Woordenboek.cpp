@@ -72,7 +72,7 @@ void Woordenboek::removeWoord(const std::string &woord) {
                 break;
             }
         }
-        minimaliseer();
+        boek.minimizeUnreachable(woord);
     }
 }
 
@@ -84,16 +84,19 @@ void Woordenboek::minimaliseer() {
 
 void Woordenboek::controleer(const std::string &inFileName) {
     size_t startExtension = inFileName.find_last_of('.');
-    string outFileName = inFileName.substr(startExtension);
+    string outFileName = inFileName.substr(0, startExtension);
     outFileName += "_corrected.html";
     checkText(inFileName.c_str(), outFileName.c_str());
 }
 
 void Woordenboek::getWoordenboekVanLengte(unsigned int woordLengte) {
     Woordenboek woordenboekLengte = Woordenboek();
+    vector<string> woordenWeg;
     for (const auto &woord: woorden) {
         if (woord.size() == woordLengte)
             woordenboekLengte.woorden.push_back(woord);
+        else
+            woordenWeg.push_back(woord);
     }
     auto transition = boek.getTransitions();
     auto finalstates = boek.getFinalStates();
@@ -125,7 +128,9 @@ void Woordenboek::getWoordenboekVanLengte(unsigned int woordLengte) {
     newBoek.setFinalStates(finalstates);
     newBoek.removeUnreachable();
     woordenboekLengte.boek = newBoek;
-    woordenboekLengte.minimaliseer();
+    for (auto woord: woordenWeg) {
+        boek.minimizeUnreachable(woord);
+    }
     *this = woordenboekLengte;
 }
 
@@ -185,7 +190,7 @@ void Woordenboek::checkText(const char *inputFile, const char *outputFile) { //A
             }
             restLine = wordMatch.suffix();
         }
-        outFile << line << '\n';
+        outFile << line << "<br>" << '\n';
     }
     inFile.close();
     outFile.close();

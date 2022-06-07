@@ -454,3 +454,37 @@ void NFA::removeUnreachable() {
     sort(oldFinalStates.begin(), oldFinalStates.end());
     set_intersection(oldFinalStates.begin(), oldFinalStates.end(), R.begin(), R.end(), back_inserter(FinalStates));
 }
+
+void NFA::minimizeUnreachable(string state) {
+    if (not transitions[state].empty())
+        return;
+    for (int i = state.size() - 1; i > 0; i--) {
+        string presubWoord = state.substr(0, i+1);
+        string subWoord = state.substr(0, i);
+        if (transitions[subWoord].size() == 1 && transitions[subWoord][0].size() == 2 && find(FinalStates.begin(),
+                                                                                              FinalStates.end(),
+                                                                                              subWoord) == FinalStates.end()) {
+            continue;
+        }
+        for (int j = 0; j < transitions[subWoord].size(); j++) {
+            if (transitions[subWoord][j][0] == presubWoord.substr(i,1)) {
+                if (transitions[subWoord][j].size() == 2)
+                    transitions[subWoord].erase(transitions[subWoord].begin() + j);
+                else
+                    transitions[subWoord][j].erase(find(transitions[subWoord][j].begin(),
+                                                       transitions[subWoord][j].end(),
+                                                       presubWoord));
+                removeUnreachable();
+                return;
+            }
+        }
+    }
+    transitions.erase({state[0]});
+    for (int j = 0; j < transitions["Start"].size(); ++j) {
+        if (transitions["Start"][j][0] == state.substr(0,1)) {
+            transitions["Start"].erase(transitions["Start"].begin() + j);
+            break;
+        }
+    }
+    removeUnreachable();
+}

@@ -76,6 +76,8 @@ public:
     void pushFinal(vector<string> final);
 
     void removeUnreachable();
+
+    void minimizeUnreachable(string state);
 };
 
 
