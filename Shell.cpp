@@ -74,6 +74,7 @@ void Shell::run_line(std::string &cmd) {
         else if (command == "equal") run_equal(args);
         else if (command == "save") run_save(args);
         else if (command == "load") run_load(args);
+        else if (command == "clear") system("clear");
         else {
             throw std::invalid_argument("\"" + command + "\" is an unknown command.\nUse \"help\" or \"h\" to get a list of all accepted commands.");
         }
