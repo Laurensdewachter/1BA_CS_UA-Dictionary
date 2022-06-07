@@ -44,6 +44,7 @@ private:
     void run_length(std::vector<std::string> &args);
     void run_suggest(std::vector<std::string> &args);
     void run_wordle(std::vector<std::string> &args);
+    void run_equal(std::vector<std::string> &args);
     void run_save(std::vector<std::string> &args);
     void run_load(std::vector<std::string> &args);
 };

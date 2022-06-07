@@ -71,6 +71,7 @@ void Shell::run_line(std::string &cmd) {
         else if (command == "length") run_length(args);
         else if (command == "suggest") run_suggest(args);
         else if (command == "wordle") run_wordle(args);
+        else if (command == "equal") run_equal(args);
         else if (command == "save") run_save(args);
         else if (command == "load") run_load(args);
         else {
@@ -113,6 +114,7 @@ void Shell::run_help() {
     << R"("length [N]":)" << "\t\t\t\t\t\t" << "remove all words that do not have length N from the dictionary" << std::endl
     << R"("suggest [WORD]":)" << "\t\t\t\t\t" << "suggest a word in the dictionary that is the most similar to WORD" << std::endl
     << R"("wordle":)" << "\t\t\t\t\t\t\t" << "play a game of Wordle" << std::endl
+    << R"("equal [FILE]":)" << "\t\t\t\t\t\t" << "compare the current dictionary in the file" << std::endl
     << R"("save":)" << "\t\t\t\t\t\t\t\t" << "save the current dictionary" << std::endl
     << R"("load [FILE]":)" << "\t\t\t\t\t\t" << "load a dictionary from the given file" << std::endl;
 }
@@ -205,6 +207,15 @@ void Shell::run_wordle(std::vector<std::string> &args) {
         wordle.guessWord(line);
     }
     prompt = "> ";
+}
+
+void Shell::run_equal(std::vector<std::string> &args) {
+    if (args.size() != 1) throw std::invalid_argument("\"equal\" should be given a file as an argument.\nUse \"help\" or \"h\" to get a list of all accepted commands");
+    if (!FileExists(args[0])) throw std::invalid_argument("\"" + args[0] + "\" does not exist. Please give a valid file");
+
+    Woordenboek dict2(args[0]);
+
+    dictionary->gemeenschappelijk(dict2);
 }
 
 void Shell::run_save(std::vector<std::string> &args) {

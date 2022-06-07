@@ -76,7 +76,7 @@ public:
      * \Post: De gemeenschappelijke woorden van de twee woordenboeken zijn samengevoegd in één woordenboek.
      * \return: Het nieuw gevormde woordenboek.
      */
-    static Woordenboek gemeenschappelijk(Woordenboek dict1, Woordenboek dict2);
+    void gemeenschappelijk(Woordenboek dict2);
 
     /**
      * \brief slaag het woordenboek op
