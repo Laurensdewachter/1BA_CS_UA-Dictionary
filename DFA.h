@@ -19,6 +19,7 @@ using nlohmann::json;
 
 using namespace std;
 
+class NFA;
 class DFA {
     std::string type;
     std::string StartingState;
@@ -72,6 +73,8 @@ public:
     DFA minimize();
 
     void addState(string from, string to, string transition, bool final);
+
+    NFA toNFA();
 };
 
 

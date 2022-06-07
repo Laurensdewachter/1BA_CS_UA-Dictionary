@@ -3,6 +3,7 @@
 //
 
 #include "DFA.h"
+#include "NFA.h"
 #include <iostream>
 
 DFA::DFA() {}
@@ -660,10 +661,8 @@ DFA DFA::minimize() {
     vector<string> finals=FinalStates;
     CurrentState=StartingState;
     for(const auto& transition:transitions[CurrentState]){
-        for(const auto& state:transition){
-            if(std::find(states.begin(), states.end(),state)!=states.end()) {
-                states.push_back(state);
-            }
+        if(std::find(states.begin(), states.end(),transition.at(1))==states.end()) {
+            states.push_back(transition.at(1));
         }
     }
     for(const auto& state:states){
@@ -727,7 +726,8 @@ DFA DFA::minimize() {
     for(auto state:states){
         for(auto same:equivalent){
             if(state!=same.first and state!=same.second){
-                nietEquivalent.push_back(state);
+                if(std::find(nietEquivalent.begin(), nietEquivalent.end(), state) == nietEquivalent.end())
+                    nietEquivalent.push_back(state);
             }
         }
     }
@@ -740,8 +740,9 @@ DFA DFA::minimize() {
                 starting=true;
             }
         }
-        nieuwStates.push_back(nieuwState);
-        if(starting){
+        if(std::find(nieuwStates.begin(), nieuwStates.end(), nieuwState) == nieuwStates.end())
+            nieuwStates.push_back(nieuwState);
+        if(starting) {
             nieuwStart=nieuwState;
         }
     }
@@ -751,7 +752,7 @@ DFA DFA::minimize() {
     if(std::find(nietEquivalent.begin(), nietEquivalent.end(),StartingState)!=nietEquivalent.end()){
         nieuwDfa.StartingState=StartingState;
     }
-    else{
+    else {
         nieuwDfa.StartingState=nieuwStart;
     }
     nieuwDfa.CurrentState=StartingState;
@@ -760,7 +761,7 @@ DFA DFA::minimize() {
     totalStates=nietEquivalent;
     string transition;
     for(const auto& state:totalStates){
-        if(state.find("/")){
+        if(state.find("/")!=-1){
             int pos=state.find("/");
             string copyState=state;
             copyState.substr(pos);
@@ -788,9 +789,9 @@ DFA DFA::minimize() {
         }
         nieuwDfa.addState(CurrentState,state,transition,final);
     }
-    for(auto state:nieuwStates){
+    /*for(auto state:nieuwStates){
 
-    }
+    }*/
     return nieuwDfa;
 }
 
@@ -816,4 +817,21 @@ void DFA::addState(string from, string to, string transition, bool final) {
             transitions[from].push_back({transition, to});
         }
     }
+}
+
+NFA DFA::toNFA() {
+    NFA NFAboek;
+    NFAboek.setStartingState(StartingState);
+    NFAboek.setFinalStates(FinalStates);
+    std::map<std::string,std::vector<std::vector<std::string>>> newTransitions;
+    for(auto i:transitions){
+        for(auto j:i.second){
+            if(j[1] != "{}"){
+               newTransitions[i.first].push_back({j[0], j[1]});
+            }
+        }
+    }
+    NFAboek.setTransitions(newTransitions);
+
+    return NFAboek;
 }

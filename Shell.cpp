@@ -109,7 +109,7 @@ void Shell::run_help() {
     << R"("remove [WORD]":)" << "\t\t\t\t\t" << "remove a word from the dictionary" << std::endl
     << R"("minimize":)" << "\t\t\t\t\t\t\t" << "minimize the current dictionary" << std::endl
     << R"("check [FILE]":)" << "\t\t\t\t\t\t" << "check the text in the file for mistakes" << std::endl
-    << R"("combine [FILE] [FILE]":)" << "\t\t\t" << "combine the two dictionaries in the files" << std::endl
+    << R"("combine [FILE]":)" << "\t\t\t" << "combine the current dictionary with the dictionary in the file" << std::endl
     << R"("length [N]":)" << "\t\t\t\t\t\t" << "remove all words that do not have length N from the dictionary" << std::endl
     << R"("suggest [WORD]":)" << "\t\t\t\t\t" << "suggest a word in the dictionary that is the most similar to WORD" << std::endl
     << R"("wordle":)" << "\t\t\t\t\t\t\t" << "play a game of Wordle" << std::endl
@@ -118,18 +118,24 @@ void Shell::run_help() {
 }
 
 void Shell::run_add(std::vector<std::string> &args) {
-    if (args.size() != 1) throw std::invalid_argument("\"add\" should be given a word as an argument.\nUse \"help\" or \"h\" to get a list of all accepted commands");
+    if (args.empty()) throw std::invalid_argument("\"add\" should be given a word as an argument.\nUse \"help\" or \"h\" to get a list of all accepted commands");
     if (!containsOnlyLetters(args[0])) throw std::invalid_argument("Word \"" + args[0] + "\" is not valid.\nThe word can only contain letters");
     std::string word = args[0];
+    for (unsigned int i = 1; i < args.size(); i++) {
+        word += " " + args[i];
+    }
     std::transform(word.begin(), word.end(), word.begin(), [](unsigned char c){ return std::tolower(c);});
 
     dictionary->addWoord(word);
 }
 
 void Shell::run_remove(std::vector<std::string> &args) {
-    if (args.size() != 1) throw std::invalid_argument("\"remove\" should be given a word as an argument.\nUse \"help\" or \"h\" to get a list of all accepted commands");
+    if (args.empty()) throw std::invalid_argument("\"remove\" should be given a word as an argument.\nUse \"help\" or \"h\" to get a list of all accepted commands");
     if (!containsOnlyLetters(args[0])) throw std::invalid_argument("Word \"" + args[0] + "\" is not valid.\nThe word can only contain letters");
     std::string word = args[0];
+    for (unsigned int i = 1; i < args.size(); i++) {
+        word += " " + args[i];
+    }
     std::transform(word.begin(), word.end(), word.begin(), [](unsigned char c){ return std::tolower(c);});
 
     dictionary->removeWoord(word);
@@ -173,8 +179,12 @@ void Shell::run_suggest(std::vector<std::string> &args) {
     } else {
         if (!containsOnlyLetters(args[0])) throw std::invalid_argument("Word \"" + args[0] + "\" is not valid.\nThe word can only contain letters");
     }
+    std::string word = args[0];
+    for (unsigned int i = 1; i < args.size(); i++) {
+        word += " " + args[i];
+    }
 
-    std::string suggestion = dictionary->giveSuggestion(args[0]);
+    std::string suggestion = dictionary->giveSuggestion(word);
 
     std::cout << "The closest word in the dictionary is \"" << suggestion << "\"" << std::endl;
 }
@@ -182,7 +192,7 @@ void Shell::run_suggest(std::vector<std::string> &args) {
 void Shell::run_wordle(std::vector<std::string> &args) {
     if (!args.empty()) throw std::invalid_argument("\"wordle\" should not be given an argument.\nUse \"help\" or \"h\" to get a list of all accepted commands");
 
-    Wordle wordle(dictionary, 6);
+    Wordle wordle(dictionary);
     prompt = "guess > ";
     while(!wordle.hasFinished()) {
         std::cout << prompt;
@@ -232,7 +242,7 @@ bool FileExists(const std::string &filename) {
 }
 
 bool containsOnlyLetters(std::string const &str) {
-    return str.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ") == std::string::npos;
+    return str.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ ") == std::string::npos;
 }
 
 bool isNumber(const string &str) {

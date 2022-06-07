@@ -23,6 +23,7 @@ Woordenboek::Woordenboek(const string &listName) {
     if (file.is_open()) {
         std::string line;
         while (std::getline(file, line)) {
+            std::transform(line.begin(), line.end(), line.begin(), [](unsigned char c){ return std::tolower(c);});
             addWoord(line);
             boek.setCurrentState("Start");
         }
@@ -51,14 +52,34 @@ void Woordenboek::addWoord(const string woord) {
         boek.setCurrentState(totalString);
     }
     woorden.push_back(woord);
+    boek.setCurrentState("Start");
 }
 
 void Woordenboek::removeWoord(const std::string &woord) {
-
+    if (boek.accepts(woord)) {
+        std::string state = boek.getCurrentState();
+        std::vector<std::string> fs = boek.getFinalStates();
+        for (std::vector<std::string>::iterator itfs = fs.begin(); itfs != fs.end(); itfs++) {
+            if ((*itfs) == state) {
+                fs.erase(itfs);
+                boek.setFinalStates(fs);
+                break;
+            }
+        }
+        for (std::vector<std::string>::iterator itw = woorden.begin(); itw != woorden.end(); itw++) {
+            if ((*itw) == woord) {
+                woorden.erase(itw);
+                break;
+            }
+        }
+        minimaliseer();
+    }
 }
 
 void Woordenboek::minimaliseer() {
-
+    DFA dfaBoek = boek.toDFA();
+    dfaBoek = dfaBoek.minimize();
+    boek = dfaBoek.toNFA();
 }
 
 void Woordenboek::controleer(const std::string &inFileName) {
@@ -114,7 +135,7 @@ void Woordenboek::save(std::ostream &onstream) {
     }
 }
 
-Woordenboek Woordenboek::combineer(Woordenboek dict2) {
+void Woordenboek::combineer(Woordenboek dict2) {
     NFA product(boek, dict2.boek, false);
     pushWords(dict2.woorden);
 }

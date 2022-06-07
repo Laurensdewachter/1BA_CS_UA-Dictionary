@@ -10,8 +10,9 @@
 using namespace std;
 
 class Woordenboek {
-private:
+public:
     vector<string> woorden;
+private:
     NFA boek;
 public:
 //=============Constructors/Destructor=====================
@@ -87,7 +88,7 @@ public:
      * \pre: Er bestaan twee niet lege woordenboeken
      * \Post: Er bestaat een nieuwe NFA (woordenboek) die de combinatie is van de twee gegeven woordenboeken
      */
-    Woordenboek combineer(Woordenboek dict2);
+    void combineer(Woordenboek dict2);
 
     void checkText(const char *inputFile, const char *outputFile);
 

@@ -104,6 +104,10 @@ DFA NFA::toDFA() {
     dfa.setStartingState("{" + StartingState + "}");
     map<string,vector<vector<string>>> t;
     map<string, vector<vector<string>>> oldmap;
+    for(auto i:alphabet){
+        addState("{}", "{}", i, false);
+    }
+
     int oldsize = 1;
     for (auto j: alphabet){
         string str = "{";
@@ -384,6 +388,7 @@ string NFA::getSuggestion(string letters, bool b) {
             return "";
         }
     }
+    if (stochasticTransitions[letters].empty()) return "";
     int number = stoi(stochasticTransitions[letters][0][2]);
     string trans = stochasticTransitions[letters][0][0];
     for(auto i:stochasticTransitions[letters]){

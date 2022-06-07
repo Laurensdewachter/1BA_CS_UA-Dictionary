@@ -1,18 +1,18 @@
 #include "Wordle.h"
 #include <iostream>
 #include <iomanip>
+#include <random>
 
 Wordle::Wordle(Woordenboek* book, unsigned int length, unsigned int numguesses) {
     numGuesses = numguesses;
     //w = book->getWoordenboekVanLengte(length);
     w = book;
-    word = w->giveSuggestion("");
-    while (word.length() != length) word = w->giveSuggestion("");
+    while (word.length() != length) word = book->woorden[rand() % (book->woorden.size())];
     wordLength = length;
     guesses = {};
     colors = {};
     print();
-    std::cout<<std::endl <<std::endl;
+    std::cout << std::endl << std::endl;
 }
 
 void Wordle::print() {
@@ -46,6 +46,10 @@ void Wordle::print() {
 }
 
 void Wordle::guessWord(std::string guess) {
+    if (guess.find_first_not_of("abcdefghijklmnopqrstuvwxyz") != std::string::npos){
+        std::cout << "\"" << guess << "\" is not a valid word" << std::endl;
+        return;
+    }
     if (w->accepts(guess)) {
         guesses.emplace_back(guess);
         colors.emplace_back(std::vector<std::string>(wordLength, "\033[1;37m"));
