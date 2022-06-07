@@ -31,7 +31,7 @@ Woordenboek::Woordenboek(const string &listName) {
 }
 
 void Woordenboek::operator=(Woordenboek &newDict) {
-    woorden == newDict.woorden;
+    woorden = newDict.woorden;
     boek = newDict.boek;
 }
 
