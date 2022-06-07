@@ -79,9 +79,7 @@ void Woordenboek::removeWoord(const std::string &woord, bool removeUnreachable) 
 }
 
 void Woordenboek::minimaliseer() {
-    DFA dfaBoek = boek.toDFA();
-    dfaBoek = dfaBoek.minimize();
-    boek = dfaBoek.toNFA();
+    boek.removeUnreachable();
 }
 
 void Woordenboek::controleer(const std::string &inFileName) {
