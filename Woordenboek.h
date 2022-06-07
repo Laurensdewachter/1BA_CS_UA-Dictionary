@@ -44,7 +44,7 @@ public:
      * \brief Verwijder een woord
      * 
      */
-    void removeWoord(const std::string &woord);
+    void removeWoord(const std::string &woord, bool removeUnreachable = true);
 
     /**
      * \Pre: Er bestaat een niet leeg woordenboek

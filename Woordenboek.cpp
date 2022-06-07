@@ -55,7 +55,7 @@ void Woordenboek::addWoord(const string woord) {
     boek.setCurrentState("Start");
 }
 
-void Woordenboek::removeWoord(const std::string &woord) {
+void Woordenboek::removeWoord(const std::string &woord, bool removeUnreachable) {
     if (boek.accepts(woord)) {
         std::string state = boek.getCurrentState();
         std::vector<std::string> fs = boek.getFinalStates();
@@ -74,6 +74,8 @@ void Woordenboek::removeWoord(const std::string &woord) {
         }
         boek.minimizeUnreachable(woord);
     }
+    if (removeUnreachable)
+        boek.removeUnreachable();
 }
 
 void Woordenboek::minimaliseer() {
@@ -128,9 +130,10 @@ void Woordenboek::getWoordenboekVanLengte(unsigned int woordLengte) {
     newBoek.setFinalStates(finalstates);
     newBoek.removeUnreachable();
     woordenboekLengte.boek = newBoek;
-    for (auto woord: woordenWeg) {
-        removeWoord(woord);
+    for (const auto &woord: woordenWeg) {
+        removeWoord(woord, false);
     }
+    boek.removeUnreachable();
     *this = woordenboekLengte;
 }
 

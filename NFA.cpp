@@ -474,7 +474,6 @@ void NFA::minimizeUnreachable(string state) {
                     transitions[subWoord][j].erase(find(transitions[subWoord][j].begin(),
                                                        transitions[subWoord][j].end(),
                                                        presubWoord));
-                removeUnreachable();
                 return;
             }
         }
@@ -486,5 +485,4 @@ void NFA::minimizeUnreachable(string state) {
             break;
         }
     }
-    removeUnreachable();
 }
