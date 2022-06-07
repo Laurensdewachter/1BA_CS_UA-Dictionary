@@ -273,7 +273,7 @@ void NFA::setAlphabet(const vector<string> &alphabet) {
     NFA::alphabet = alphabet;
 }
 
-const map<string, vector<vector<string>>> &NFA::getTransitions() const {
+map<string, vector<vector<string>>> &NFA::getTransitions() {
     return transitions;
 }
 

@@ -54,7 +54,7 @@ void Woordenboek::addWoord(const string woord) {
 }
 
 void Woordenboek::removeWoord(const std::string &woord) {
-    
+
 }
 
 void Woordenboek::minimaliseer() {

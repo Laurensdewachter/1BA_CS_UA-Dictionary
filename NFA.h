@@ -55,7 +55,7 @@ public:
 
     void setAlphabet(const vector<string> &alphabet);
 
-    const map<string, vector<vector<string>>> &getTransitions() const;
+    map<string, vector<vector<string>>> &getTransitions();
 
     void setTransitions(const map<string, vector<vector<string>>> &transitions);
 

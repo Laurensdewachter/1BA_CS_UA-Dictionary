@@ -652,3 +652,168 @@ string DFA::makeString(string R, string S, string U, string T) {
     }
     return str;
 }
+
+DFA DFA::minimize() {
+    vector<pair<string,string>> equivalent;
+    vector<string> nietEquivalent;
+    vector<string> states={StartingState};
+    vector<string> finals=FinalStates;
+    CurrentState=StartingState;
+    for(const auto& transition:transitions[CurrentState]){
+        for(const auto& state:transition){
+            if(std::find(states.begin(), states.end(),state)!=states.end()) {
+                states.push_back(state);
+            }
+        }
+    }
+    for(const auto& state:states){
+        for(const auto& state2:states){
+            if(state==state2){
+                continue;
+            }
+            else {
+                //Todo: maak hulpfunctie
+                bool distinguishable = false;
+                for (int i = 0; i < alphabet.size(); i++) {
+                    string toFind = transitions[state][i][0];
+                    if (std::find(FinalStates.begin(), FinalStates.end(), transitions[state][i][0]) !=
+                        FinalStates.end()) {
+                        if (std::find(FinalStates.begin(), FinalStates.end(), transitions[state2][i][0]) !=
+                            FinalStates.end()) {
+                            continue;
+                        } else {
+                            distinguishable = true;
+                        }
+                    } else {
+                        if (std::find(FinalStates.begin(), FinalStates.end(), transitions[state2][i][0]) !=
+                            FinalStates.end()) {
+                            distinguishable = true;
+                        }
+                    }
+                }
+                if (not distinguishable) {
+                    equivalent.push_back({state, state2});
+                }
+            }
+        }
+    }
+    //Todo: maak hulpfunctie
+    vector<vector<string>> comboStates={};
+    string nieuwStart;
+    for(const auto& duo:equivalent){
+        for(const auto& duo2:equivalent){
+            if(duo==duo2){
+                continue;
+            }
+            if(duo.first==duo2.first){
+                comboStates.push_back({duo.first, duo.second, duo2.second});
+            }
+            else if(duo.first==duo2.second){
+                comboStates.push_back({duo.first, duo.second, duo2.first});
+            }
+            else if(duo.second==duo2.first){
+                comboStates.push_back({duo.first, duo.second, duo2.second});
+            }
+            else if(duo.second==duo2.second){
+                comboStates.push_back({duo.first, duo.second, duo2.first});
+            }
+            else{
+                comboStates.push_back({duo.first,duo.second});
+                comboStates.push_back({duo2.first,duo2.second});
+            }
+        }
+    }
+    vector<string> nieuwStates={};
+    for(auto state:states){
+        for(auto same:equivalent){
+            if(state!=same.first and state!=same.second){
+                nietEquivalent.push_back(state);
+            }
+        }
+    }
+    bool starting=false;
+    for(auto collection:comboStates){
+        string nieuwState;
+        for(auto state:collection){
+            nieuwState+=state+"/";
+            if(state==StartingState){
+                starting=true;
+            }
+        }
+        nieuwStates.push_back(nieuwState);
+        if(starting){
+            nieuwStart=nieuwState;
+        }
+    }
+    DFA nieuwDfa=DFA();
+    nieuwDfa.alphabet=alphabet;
+    bool final=false;
+    if(std::find(nietEquivalent.begin(), nietEquivalent.end(),StartingState)!=nietEquivalent.end()){
+        nieuwDfa.StartingState=StartingState;
+    }
+    else{
+        nieuwDfa.StartingState=nieuwStart;
+    }
+    nieuwDfa.CurrentState=StartingState;
+    vector<string> totalStates;
+    nietEquivalent.insert(nietEquivalent.end(),nieuwStates.begin(),nieuwStates.end());
+    totalStates=nietEquivalent;
+    string transition;
+    for(const auto& state:totalStates){
+        if(state.find("/")){
+            int pos=state.find("/");
+            string copyState=state;
+            copyState.substr(pos);
+            if(std::find(FinalStates.begin(), FinalStates.end(),copyState)!=FinalStates.end()){
+                final=true;
+            }
+            for(auto overgang:transitions[CurrentState]) {
+                for (auto combo: comboStates) {
+                    if(std::find(combo.begin(), combo.end(),overgang[1])!=combo.end()){
+                        transition=overgang[0];
+                    }
+                }
+            }
+        }
+        else if(std::find(FinalStates.begin(), FinalStates.end(),state)!=FinalStates.end()){
+            final=true;
+        }
+
+        else{
+            for(auto overgang:transitions[CurrentState]){
+                if(overgang[1]==state){
+                    transition=overgang[0];
+                }
+            }
+        }
+        nieuwDfa.addState(CurrentState,state,transition,final);
+    }
+    for(auto state:nieuwStates){
+
+    }
+    return nieuwDfa;
+}
+
+void DFA::addState(string from, string to, string transition, bool final) {
+    if(std::find(alphabet.begin(), alphabet.end(), transition) == alphabet.end()){
+        alphabet.push_back(transition);
+    }
+    if(final and find(FinalStates.begin(), FinalStates.end(), to) == FinalStates.end()){
+        FinalStates.push_back(to);
+    }
+    if(transitions[from].empty()){
+        transitions[from].push_back({transition, to});
+    }
+    else{
+        bool b = true;
+        for(auto i:transitions[from]){
+            if(i[0] == transition){
+                b = false;
+                break;
+            }
+        }
+        if(b){
+            transitions[from].push_back({transition, to});
+        }
+    }
+}
