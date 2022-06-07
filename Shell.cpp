@@ -109,7 +109,7 @@ void Shell::run_help() {
     << R"("remove [WORD]":)" << "\t\t\t\t\t" << "remove a word from the dictionary" << std::endl
     << R"("minimize":)" << "\t\t\t\t\t\t\t" << "minimize the current dictionary" << std::endl
     << R"("check [FILE]":)" << "\t\t\t\t\t\t" << "check the text in the file for mistakes" << std::endl
-    << R"("combine [FILE]":)" << "\t\t\t" << "combine the current dictionary with the dictionary in the file" << std::endl
+    << R"("combine [FILE]":)" << "\t\t\t\t" << "combine the current dictionary with the dictionary in the file" << std::endl
     << R"("length [N]":)" << "\t\t\t\t\t\t" << "remove all words that do not have length N from the dictionary" << std::endl
     << R"("suggest [WORD]":)" << "\t\t\t\t\t" << "suggest a word in the dictionary that is the most similar to WORD" << std::endl
     << R"("wordle":)" << "\t\t\t\t\t\t\t" << "play a game of Wordle" << std::endl

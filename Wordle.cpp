@@ -5,8 +5,8 @@
 
 Wordle::Wordle(Woordenboek* book, unsigned int length, unsigned int numguesses) {
     numGuesses = numguesses;
-    //w = book->getWoordenboekVanLengte(length);
     w = book;
+    w->getWoordenboekVanLengte(length);
     while (word.length() != length) word = book->woorden[rand() % (book->woorden.size())];
     wordLength = length;
     guesses = {};
